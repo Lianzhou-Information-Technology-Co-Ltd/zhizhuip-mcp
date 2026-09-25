@@ -1,0 +1,2357 @@
+[
+  {
+    "name": "bandwidth_detail",
+    "title": "有效期内带宽详情",
+    "description": "查询子账号剩余有效期内已购带宽的详情。后端缓存 120 秒，不要频繁调用。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/bandwidth/bandwidthNumDetail",
+    "products": {
+      "static-standard": {
+        "type": 1,
+        "status": 1,
+        "native": 0
+      },
+      "static-native": {
+        "type": 1,
+        "status": 1,
+        "native": 1
+      },
+      "static-isp-native": {
+        "type": 1,
+        "status": 1,
+        "native": 2
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "static-standard",
+            "static-native",
+            "static-isp-native"
+          ],
+          "description": "产品：static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生）"
+        },
+        "subAccount": {
+          "type": "string",
+          "description": "子账号"
+        }
+      },
+      "required": [
+        "product",
+        "subAccount"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "bandwidth_package_list",
+    "title": "带宽套餐列表",
+    "description": "查询某静态住宅产品在某国家可选的带宽套餐及价格；下单或升级时把返回的带宽值填到 bandwidth_num。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/bandwidth/getBandwidthList",
+    "products": {
+      "static-standard": {
+        "type": 1,
+        "status": 1,
+        "native": 0
+      },
+      "static-native": {
+        "type": 1,
+        "status": 1,
+        "native": 1
+      },
+      "static-isp-native": {
+        "type": 1,
+        "status": 1,
+        "native": 2
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "static-standard",
+            "static-native",
+            "static-isp-native"
+          ],
+          "description": "产品：static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生）"
+        },
+        "country": {
+          "type": "string",
+          "description": "国家编码。国家用 ISO 3166-1 二字码，如 US"
+        }
+      },
+      "required": [
+        "product",
+        "country"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "bandwidth_trend",
+    "title": "子账号带宽趋势",
+    "description": "查询子账号的带宽变化趋势：trend_type=1 取最近的实时数据，trend_type=2 按 startTime、endTime 取历史，跨度不超过 31 天。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/bandwidth/monitoringTrend",
+    "products": {
+      "static-standard": {
+        "type": 1,
+        "status": 1,
+        "native": 0
+      },
+      "static-native": {
+        "type": 1,
+        "status": 1,
+        "native": 1
+      },
+      "static-isp-native": {
+        "type": 1,
+        "status": 1,
+        "native": 2
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "static-standard",
+            "static-native",
+            "static-isp-native"
+          ],
+          "description": "产品：static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生）"
+        },
+        "trend_type": {
+          "type": "integer",
+          "description": "趋势类型：1=实时，2=历史（要传 startTime、endTime）",
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "subAccount": {
+          "type": "string",
+          "description": "子账号id"
+        },
+        "startTime": {
+          "type": "integer",
+          "description": "开始时间戳（秒），trend_type=2 时必填"
+        },
+        "endTime": {
+          "type": "integer",
+          "description": "结束时间戳（秒），trend_type=2 时必填"
+        }
+      },
+      "required": [
+        "product",
+        "trend_type",
+        "subAccount"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "city_list",
+    "title": "城市列表",
+    "description": "查询某产品某国家下可选的城市；动态住宅产品还要指定州或省。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/common/cityList",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      },
+      "static-standard": {
+        "type": 1,
+        "status": 1,
+        "native": 0
+      },
+      "static-native": {
+        "type": 1,
+        "status": 1,
+        "native": 1
+      },
+      "static-isp-native": {
+        "type": 1,
+        "status": 1,
+        "native": 2
+      },
+      "static-ipv6": {
+        "type": 1,
+        "status": 1,
+        "native": 1,
+        "version": 6
+      },
+      "datacenter": {
+        "type": 2,
+        "status": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly",
+            "static-standard",
+            "static-native",
+            "static-isp-native",
+            "static-ipv6",
+            "datacenter"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限），static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生），static-ipv6=静态住宅（IPv6），datacenter=数据中心"
+        },
+        "country_id": {
+          "type": "integer",
+          "description": "国家 id，取 country_list 返回的 id"
+        },
+        "state_id": {
+          "type": "integer",
+          "description": "州或省 id，取 state_list 返回的 id。产品 dynamic-no-expiry、dynamic-monthly 下必填"
+        },
+        "state_code": {
+          "type": "string",
+          "description": "州或省编码，取 state_list 返回的编码；和 state_id 二选一"
+        },
+        "country_code": {
+          "type": "string",
+          "description": "国家编码，取 country_list 返回的编码；和 country_id 二选一。国家用 ISO 3166-1 二字码，如 US"
+        }
+      },
+      "required": [
+        "product",
+        "country_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "country_list",
+    "title": "国家列表",
+    "description": "查询某产品可选的国家及编码。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/common/countryList",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      },
+      "static-standard": {
+        "type": 1,
+        "status": 1,
+        "native": 0
+      },
+      "static-native": {
+        "type": 1,
+        "status": 1,
+        "native": 1
+      },
+      "static-isp-native": {
+        "type": 1,
+        "status": 1,
+        "native": 2
+      },
+      "static-ipv6": {
+        "type": 1,
+        "status": 1,
+        "native": 1,
+        "version": 6
+      },
+      "datacenter": {
+        "type": 2,
+        "status": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly",
+            "static-standard",
+            "static-native",
+            "static-isp-native",
+            "static-ipv6",
+            "datacenter"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限），static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生），static-ipv6=静态住宅（IPv6），datacenter=数据中心"
+        }
+      },
+      "required": [
+        "product"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "coupon_list",
+    "title": "优惠券列表",
+    "description": "查询当前账号可用的优惠券，下单或续费时把返回的 id 填到 conpon_id。这个接口按套餐类型与计费模式筛选，不用 product。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/conpons/conponList",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "integer",
+          "description": "套餐类型：0=动态住宅，1=静态住宅，2=数据中心",
+          "enum": [
+            0,
+            1,
+            2
+          ]
+        },
+        "status": {
+          "type": "integer",
+          "description": "计费模式：0=按流量（动态住宅），1=按时长（静态住宅与数据中心固定填 1）",
+          "enum": [
+            0,
+            1
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "status"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "flow_package_list",
+    "title": "已购流量套餐记录",
+    "description": "分页查询动态住宅产品已购买的流量套餐记录。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/device/userSetMeal",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        },
+        "page": {
+          "type": "integer",
+          "description": "当前页数"
+        },
+        "pagesize": {
+          "type": "integer",
+          "description": "每页显示数量，最大 100"
+        }
+      },
+      "required": [
+        "product",
+        "page",
+        "pagesize"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "ip_booking",
+    "title": "预约 IP",
+    "description": "需要的国家或地区没有库存时提交预约，管理员审核后补货；只登记需求，不扣费、不建子账号。",
+    "readOnly": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/externalapi/product_order/bookingIPArea",
+    "products": {
+      "static-standard": {
+        "type": 1,
+        "status": 1,
+        "native": 0
+      },
+      "static-native": {
+        "type": 1,
+        "status": 1,
+        "native": 1
+      },
+      "static-isp-native": {
+        "type": 1,
+        "status": 1,
+        "native": 2
+      },
+      "datacenter": {
+        "type": 2,
+        "status": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "static-standard",
+            "static-native",
+            "static-isp-native",
+            "datacenter"
+          ],
+          "description": "产品：static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生），datacenter=数据中心"
+        },
+        "num": {
+          "type": "integer",
+          "description": "预约的 IP 数量，1 到 1000"
+        },
+        "country": {
+          "type": "string",
+          "description": "预约的国家名称（填国家名，不是编码），如 美国"
+        }
+      },
+      "required": [
+        "product",
+        "num",
+        "country"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "ip_range_status",
+    "title": "IP 段库存状态",
+    "description": "分页查询某静态住宅产品的 IP 段及库存状态；下单时可把有库存的段填到 ip_str 或 specifyIps。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/inventory_status/ipStrStatus",
+    "products": {
+      "static-standard": {
+        "type": 1,
+        "status": 1,
+        "native": 0
+      },
+      "static-native": {
+        "type": 1,
+        "status": 1,
+        "native": 1
+      },
+      "static-isp-native": {
+        "type": 1,
+        "status": 1,
+        "native": 2
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "static-standard",
+            "static-native",
+            "static-isp-native"
+          ],
+          "description": "产品：static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生）"
+        },
+        "country_code": {
+          "type": "string",
+          "description": "国家编码，取 country_list 返回的编码。国家用 ISO 3166-1 二字码，如 US"
+        },
+        "city_code": {
+          "type": "string",
+          "description": "城市名称，取 city_list 返回的名称"
+        },
+        "ip_str": {
+          "type": "string",
+          "description": "IP 段前缀，1 到 3 段，如 104 或 104.223"
+        },
+        "exclude_ip_str": {
+          "type": "string",
+          "description": "要排除的 IP 段前缀，多个以英文逗号分隔"
+        },
+        "page": {
+          "type": "integer",
+          "description": "页码，默认 1"
+        },
+        "pageSize": {
+          "type": "integer",
+          "description": "每页条数，默认 50，最大 100"
+        }
+      },
+      "required": [
+        "product"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "main_account_flow",
+    "title": "主账号流量",
+    "description": "查询动态住宅主账号的流量汇总。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/total/userFlowTotal",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        }
+      },
+      "required": [
+        "product"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "main_account_switch_token",
+    "title": "主账号切换 token",
+    "description": "获取动态住宅主账号的切换 token，用于 api 子账号切换时的独立 token 验证；后端还没有时会生成一个。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/device/userListEnabled",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        }
+      },
+      "required": [
+        "product"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "official_price",
+    "title": "官网价格",
+    "description": "查询各产品的官网标价。后端缓存 5 分钟。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/tool/getOriginCustomPriceInfo",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "order_bandwidth_upgrade",
+    "title": "子账号带宽升级",
+    "description": "会从账户余额扣费。把静态住宅子账号的带宽升级到 bandwidth_num；可选档位和价格用 bandwidth_package_list 查。",
+    "readOnly": false,
+    "destructive": true,
+    "method": "POST",
+    "path": "/externalapi/product_order/bandwidthUpgradeOrder",
+    "products": {
+      "static-standard": {
+        "type": 1,
+        "status": 1,
+        "native": 0
+      },
+      "static-native": {
+        "type": 1,
+        "status": 1,
+        "native": 1
+      },
+      "static-isp-native": {
+        "type": 1,
+        "status": 1,
+        "native": 2
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "static-standard",
+            "static-native",
+            "static-isp-native"
+          ],
+          "description": "产品：static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生）"
+        },
+        "bandwidth_num": {
+          "type": "integer",
+          "description": "升级后的带宽值，填 bandwidth_package_list 返回的档位"
+        },
+        "sub_accounts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "子账号"
+          },
+          "description": "要升级的子账号 id 列表"
+        }
+      },
+      "required": [
+        "product",
+        "bandwidth_num",
+        "sub_accounts"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "order_buy_dynamic",
+    "title": "购买动态住宅流量",
+    "description": "会从账户余额扣费。购买动态住宅流量，num 为 GB 数；永久套餐流量不过期，期限套餐要用 bill_timelen 指定有效时长。",
+    "readOnly": false,
+    "destructive": true,
+    "method": "POST",
+    "path": "/externalapi/product_order/createProductOrder",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        },
+        "num": {
+          "type": "integer",
+          "description": "需要购买的流量数量。单位：GB。范围：1-300GB之间"
+        },
+        "conpon_id": {
+          "type": "integer",
+          "description": "优惠券 id，用 coupon_list 查"
+        },
+        "bill_timelen": {
+          "type": "integer",
+          "description": "流量有效时长，只有 dynamic-monthly 需要：1=30天，2=90天，3=180天",
+          "enum": [
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      "required": [
+        "product",
+        "num"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "order_buy_ipv6",
+    "title": "购买 IPv6 时长 IP",
+    "description": "会从账户余额扣费。购买静态住宅 IPv6 时长 IP 子账号，num 为 IP 数量。",
+    "readOnly": false,
+    "destructive": true,
+    "method": "POST",
+    "path": "/externalapi/product_order/createIpv6Order",
+    "fixed": {
+      "type": 1,
+      "status": 1,
+      "native": 1,
+      "version": 6
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "conpon_id": {
+          "type": "integer",
+          "description": "优惠券 id，用 coupon_list 查"
+        },
+        "num": {
+          "type": "integer",
+          "description": "需要购买的子账号数量。范围：1-5000之间"
+        },
+        "country": {
+          "type": "string",
+          "description": "静态住宅国家编码code。静态住宅（IPV6）对应国家列表可获取国家编码。支持的静态住宅国家列表可在静态住宅（IPV6）国家查询。国家用 ISO 3166-1 二字码，如 US"
+        },
+        "timelen": {
+          "type": "integer",
+          "description": "购买时长：0=7天，1=30天，2=90天，3=180天，4=360天",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        "agree": {
+          "type": "string",
+          "description": "协议",
+          "enum": [
+            "SOCKS5",
+            "HTTP",
+            "HTTPS"
+          ]
+        },
+        "city": {
+          "type": "string",
+          "description": "城市名称，取 city_list 返回的名称；不传随机"
+        },
+        "verder_order_id": {
+          "type": "string",
+          "description": "外部请求订单id。非必填。如果传递，则需要每次生成新订单时，这个verder_order_id一定要唯一。否则返回verder_order_id缓存生成的订单数据。缓存有效期4小时。"
+        },
+        "use_random_username": {
+          "type": "integer",
+          "description": "创建时是否使用随机账号和密码。0=不使用，1=使用"
+        },
+        "ip_str": {
+          "type": "string",
+          "description": "指定的 IPv6 段"
+        },
+        "bandwidth_num": {
+          "type": "integer",
+          "description": "购买时选定的增值带宽"
+        },
+        "remark": {
+          "type": "string",
+          "description": "备注"
+        }
+      },
+      "required": [
+        "num",
+        "country",
+        "timelen",
+        "agree"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "order_buy_test_ip",
+    "title": "购买测试 IP",
+    "description": "会消耗账号的测试额度。购买静态住宅或数据中心的时长测试 IP，有效期默认 1 天，只用于业务测试。",
+    "readOnly": false,
+    "destructive": true,
+    "method": "POST",
+    "path": "/externalapi/product_order/createTestOrder",
+    "products": {
+      "static-standard": {
+        "type": 1,
+        "status": 1,
+        "native": 0
+      },
+      "static-native": {
+        "type": 1,
+        "status": 1,
+        "native": 1
+      },
+      "static-isp-native": {
+        "type": 1,
+        "status": 1,
+        "native": 2
+      },
+      "datacenter": {
+        "type": 2,
+        "status": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "static-standard",
+            "static-native",
+            "static-isp-native",
+            "datacenter"
+          ],
+          "description": "产品：static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生），datacenter=数据中心"
+        },
+        "num": {
+          "type": "integer",
+          "description": "需要购买的子账号数量。范围：1-300之间"
+        },
+        "country": {
+          "type": "string",
+          "description": "国家编码，用 country_list 查该产品可买的国家。国家用 ISO 3166-1 二字码，如 US"
+        },
+        "agree": {
+          "type": "string",
+          "description": "协议",
+          "enum": [
+            "SOCKS5",
+            "HTTP",
+            "HTTPS"
+          ]
+        },
+        "city": {
+          "type": "string",
+          "description": "城市名称，取 city_list 返回的名称；不传随机"
+        },
+        "use_random_username": {
+          "type": "integer",
+          "description": "是否使用随机账号密码：0=否，1=是",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "ip_str": {
+          "type": "string",
+          "description": "指定ip段，多个以英文逗号分隔"
+        },
+        "exclude_ip_str": {
+          "type": "string",
+          "description": "指定排除ip段，多个以英文逗号分隔"
+        }
+      },
+      "required": [
+        "product",
+        "num",
+        "country",
+        "agree"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "order_buy_time_ip",
+    "title": "购买时长 IP",
+    "description": "会从账户余额扣费。购买静态住宅或数据中心的时长 IP 子账号，num 为 IP 数量。后端限制：num 1 到 3000，数据中心单笔不超过 50 个且不支持 7 天档；agree 不传默认 SOCKS5，country 不传默认 US；5 秒内相同参数的重复请求会被拒。",
+    "readOnly": false,
+    "destructive": true,
+    "method": "POST",
+    "path": "/externalapi/product_order/createProductOrder",
+    "products": {
+      "static-standard": {
+        "type": 1,
+        "status": 1,
+        "native": 0
+      },
+      "static-native": {
+        "type": 1,
+        "status": 1,
+        "native": 1
+      },
+      "static-isp-native": {
+        "type": 1,
+        "status": 1,
+        "native": 2
+      },
+      "datacenter": {
+        "type": 2,
+        "status": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "static-standard",
+            "static-native",
+            "static-isp-native",
+            "datacenter"
+          ],
+          "description": "产品：static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生），datacenter=数据中心"
+        },
+        "conpon_id": {
+          "type": "integer",
+          "description": "优惠券 id，用 coupon_list 查"
+        },
+        "num": {
+          "type": "integer",
+          "description": "需要购买的子账号数量。范围：1-300之间"
+        },
+        "country": {
+          "type": "string",
+          "description": "国家编码，用 country_list 查该产品可买的国家。国家用 ISO 3166-1 二字码，如 US"
+        },
+        "timelen": {
+          "type": "integer",
+          "description": "购买时长：0=7天，1=30天，2=90天，3=180天，4=360天",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        "agree": {
+          "type": "string",
+          "description": "协议",
+          "enum": [
+            "SOCKS5",
+            "HTTP",
+            "HTTPS"
+          ]
+        },
+        "city": {
+          "type": "string",
+          "description": "城市名称，取 city_list 返回的名称；不传随机"
+        },
+        "verder_order_id": {
+          "type": "string",
+          "description": "外部请求订单id。非必填。如果传递，则需要每次生成新订单时，这个verder_order_id一定要唯一。否则返回verder_order_id缓存生成的订单数据。缓存有效期4小时。"
+        },
+        "use_random_username": {
+          "type": "integer",
+          "description": "是否使用随机账号密码：0=否，1=是",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "use_ip_port": {
+          "type": "integer",
+          "description": "IP 端口连接状态：0=关闭，1=开启",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "ip_str": {
+          "type": "string",
+          "description": "指定ip段，多个以英文逗号分隔"
+        },
+        "exclude_ip_str": {
+          "type": "string",
+          "description": "指定排除ip段，多个以英文逗号分隔"
+        },
+        "remark": {
+          "type": "string",
+          "description": "订单备注"
+        },
+        "bandwidth_num": {
+          "type": "integer",
+          "description": "购买时选定的增值带宽，可选值和价格用 bandwidth_package_list 查；数据中心没有带宽加购，不要传"
+        },
+        "specifyIps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ipStr": {
+                "type": "string",
+                "description": "IP 段前缀，取 ip_range_status 返回的段"
+              },
+              "count": {
+                "type": "integer",
+                "description": "该段要买的数量"
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "指定从哪些 IP 段购买，每项写一个 IP 段前缀和该段要买的数量；IP 段用 ip_range_status 查"
+        }
+      },
+      "required": [
+        "product",
+        "num",
+        "country",
+        "timelen",
+        "agree"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "order_refund_apply",
+    "title": "申请退单",
+    "description": "为静态住宅的一个子账号申请退单，提交后由人工审核，不会立即退款。",
+    "readOnly": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/externalapi/product_order/createOrderBack",
+    "products": {
+      "static-standard": {
+        "type": 1,
+        "status": 1,
+        "native": 0
+      },
+      "static-native": {
+        "type": 1,
+        "status": 1,
+        "native": 1
+      },
+      "static-isp-native": {
+        "type": 1,
+        "status": 1,
+        "native": 2
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "static-standard",
+            "static-native",
+            "static-isp-native"
+          ],
+          "description": "产品：static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生）"
+        },
+        "remark": {
+          "type": "string",
+          "description": "退单原因"
+        },
+        "id": {
+          "type": "string",
+          "description": "子账号 id"
+        }
+      },
+      "required": [
+        "product",
+        "remark",
+        "id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "order_renew",
+    "title": "续费时长 IP",
+    "description": "会从账户余额扣费。续费静态住宅或数据中心的时长 IP 子账号，content 按国家分组，每组写子账号 id 列表、国家、续费时长；一次最多 200 个子账号。",
+    "readOnly": false,
+    "destructive": true,
+    "method": "POST",
+    "path": "/externalapi/set_meal/renewOrder",
+    "products": {
+      "static-standard": {
+        "type": 1,
+        "status": 1,
+        "native": 0
+      },
+      "static-native": {
+        "type": 1,
+        "status": 1,
+        "native": 1
+      },
+      "static-isp-native": {
+        "type": 1,
+        "status": 1,
+        "native": 2
+      },
+      "datacenter": {
+        "type": 2,
+        "status": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "static-standard",
+            "static-native",
+            "static-isp-native",
+            "datacenter"
+          ],
+          "description": "产品：static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生），datacenter=数据中心"
+        },
+        "conpon_id": {
+          "type": "integer",
+          "description": "优惠券 id，用 coupon_list 查"
+        },
+        "content": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "country": {
+                "type": "string",
+                "description": "这组子账号的国家编码，取 sub_account_list 返回的 country"
+              },
+              "ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "description": "对应产品id集"
+                },
+                "description": "该组要续费的子账号 id 列表"
+              },
+              "timelen": {
+                "type": "integer",
+                "description": "续费时长：0=7天，1=30天，2=90天，3=180天，4=360天",
+                "enum": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4
+                ]
+              },
+              "renew_with_bandwidth": {
+                "type": "integer",
+                "description": "是否连同带宽一起续费：0=只续子账号，1=子账号和带宽一起续",
+                "enum": [
+                  0,
+                  1
+                ]
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "country",
+              "ids",
+              "timelen"
+            ]
+          },
+          "description": "续费内容，按国家分组，每组写 ids、country、timelen，可选 renew_with_bandwidth"
+        }
+      },
+      "required": [
+        "product",
+        "content"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "order_renew_ipv6",
+    "title": "续费 IPv6 时长 IP",
+    "description": "会从账户余额扣费。续费静态住宅 IPv6 时长 IP 子账号，content 按国家分组，每组写子账号 id 列表、国家、续费时长。",
+    "readOnly": false,
+    "destructive": true,
+    "method": "POST",
+    "path": "/externalapi/set_meal/renewOrderIpv6",
+    "fixed": {
+      "type": 1,
+      "status": 1,
+      "native": 1,
+      "version": 6
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "conpon_id": {
+          "type": "integer",
+          "description": "优惠券 id，用 coupon_list 查"
+        },
+        "content": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "country": {
+                "type": "string",
+                "description": "这组子账号的国家编码，取 sub_account_list 返回的 country"
+              },
+              "ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "description": "对应产品id集"
+                },
+                "description": "该组要续费的子账号 id 列表"
+              },
+              "timelen": {
+                "type": "integer",
+                "description": "续费时长：0=7天，1=30天，2=90天，3=180天，4=360天",
+                "enum": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4
+                ]
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "country",
+              "ids",
+              "timelen"
+            ]
+          },
+          "description": "续费内容，按国家分组，每组写 ids、country、timelen"
+        }
+      },
+      "required": [
+        "content"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "provider_list",
+    "title": "可用供应商列表",
+    "description": "查询动态住宅产品可用的供应商（资源池），返回的 id 可作为新增子账号或查询流量时的 spec。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/device/providerList",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        }
+      },
+      "required": [
+        "product"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "state_list",
+    "title": "州/省列表",
+    "description": "查询动态住宅产品某国家下可选的州或省。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/common/stateList",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        },
+        "country_id": {
+          "type": "integer",
+          "description": "国家 id，取 country_list 返回的 id"
+        },
+        "country_code": {
+          "type": "string",
+          "description": "国家编码，取 country_list 返回的编码；和 country_id 二选一。国家用 ISO 3166-1 二字码，如 US"
+        }
+      },
+      "required": [
+        "product",
+        "country_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sub_account_add",
+    "title": "新增动态子账号",
+    "description": "为动态住宅产品新增 num 个子账号，消耗主账号已购流量，不额外扣费。返回新建子账号的账号密码。",
+    "readOnly": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/externalapi/device/accountAdd",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        },
+        "num": {
+          "type": "integer",
+          "description": "需要生成的子账号数量"
+        },
+        "changeInterval": {
+          "type": "integer",
+          "description": "IP 切换间隔，单位分钟，5 到 120"
+        },
+        "country": {
+          "type": "string",
+          "description": "国家编码（ISO 3166-1 二字码），多个以英文逗号分隔，如 US,JP；可选国家用 country_list 查。产品 dynamic-no-expiry 下必填"
+        },
+        "state": {
+          "type": "string",
+          "description": "州/省份,多个以逗号隔开:'anhui,jiangsu'"
+        },
+        "city": {
+          "type": "string",
+          "description": "城市code"
+        },
+        "url": {
+          "type": "string",
+          "description": "业务网址"
+        },
+        "use_random_username": {
+          "type": "integer",
+          "description": "是否使用随机账号密码：0=否，1=是",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "remark": {
+          "type": "string",
+          "description": "备注"
+        },
+        "agree": {
+          "type": "string",
+          "description": "协议。产品 dynamic-no-expiry 下必填",
+          "enum": [
+            "SOCKS5",
+            "HTTP",
+            "HTTPS"
+          ]
+        },
+        "spec": {
+          "type": "integer",
+          "description": "指定供应商（资源池）id，取 provider_list 返回的 id"
+        }
+      },
+      "required": [
+        "product",
+        "num",
+        "changeInterval"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sub_account_delete",
+    "title": "删除子账号",
+    "description": "不可恢复。删除动态住宅的一个子账号。",
+    "readOnly": false,
+    "destructive": true,
+    "method": "POST",
+    "path": "/externalapi/device/accountDelete",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        },
+        "id": {
+          "type": "string",
+          "description": "子账号 id"
+        }
+      },
+      "required": [
+        "product",
+        "id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sub_account_delete_batch",
+    "title": "批量删除子账号",
+    "description": "不可恢复。批量删除动态住宅的多个子账号，ids 为英文逗号连接的子账号 id。",
+    "readOnly": false,
+    "destructive": true,
+    "method": "POST",
+    "path": "/externalapi/device/accountDeleteList",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        },
+        "ids": {
+          "type": "string",
+          "description": "子账号id集，以英文逗号连接"
+        }
+      },
+      "required": [
+        "product",
+        "ids"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sub_account_flow",
+    "title": "子账号流量",
+    "description": "查询动态住宅某个子账号在日期区间内每天的流量。区间最多 30 天，结束日期不能晚于今天。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/total/subAccountFlow",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        },
+        "id": {
+          "type": "string",
+          "description": "子账号id"
+        },
+        "start_date": {
+          "type": "string",
+          "description": "开始日期，格式 YYYY-MM-DD"
+        },
+        "end_date": {
+          "type": "string",
+          "description": "结束日期，格式 YYYY-MM-DD，不早于开始日期、不晚于今天"
+        },
+        "spec": {
+          "type": "integer",
+          "description": "供应商 id，取 provider_list 返回的 id；不传查全部"
+        }
+      },
+      "required": [
+        "product",
+        "id",
+        "start_date",
+        "end_date"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sub_account_limit_flow",
+    "title": "子账号流量上限配置",
+    "description": "查询动态住宅某个子账号的流量上限设置与已用量。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/tool/accountLimitFlowDetail",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        },
+        "account": {
+          "type": "string",
+          "description": "子账号id"
+        }
+      },
+      "required": [
+        "product",
+        "account"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sub_account_limit_flow_batch",
+    "title": "批量子账号流量上限配置",
+    "description": "分页查询多个动态住宅子账号的流量上限设置。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/tool/accountLimitFlowBatchDetail",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        },
+        "accounts": {
+          "type": "string",
+          "description": "子账号 id 集合，多个以英文逗号连接"
+        },
+        "page": {
+          "type": "integer"
+        },
+        "pagesize": {
+          "type": "integer",
+          "description": "分页数量，最大值100"
+        }
+      },
+      "required": [
+        "product",
+        "accounts"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sub_account_list",
+    "title": "子账号列表",
+    "description": "分页查询某产品的子账号，返回子账号 id、账号密码、端口、国家、到期时间等；后面所有按子账号操作的工具都从这里取 id。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/device/accountList",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      },
+      "static-standard": {
+        "type": 1,
+        "status": 1,
+        "native": 0
+      },
+      "static-native": {
+        "type": 1,
+        "status": 1,
+        "native": 1
+      },
+      "static-isp-native": {
+        "type": 1,
+        "status": 1,
+        "native": 2
+      },
+      "static-ipv6": {
+        "type": 1,
+        "status": 1,
+        "native": 1,
+        "version": 6
+      },
+      "datacenter": {
+        "type": 2,
+        "status": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly",
+            "static-standard",
+            "static-native",
+            "static-isp-native",
+            "static-ipv6",
+            "datacenter"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限），static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生），static-ipv6=静态住宅（IPv6），datacenter=数据中心"
+        },
+        "page": {
+          "type": "integer",
+          "description": "当前页数"
+        },
+        "pagesize": {
+          "type": "integer",
+          "description": "每页显示数量。每页最大100条数据"
+        },
+        "customUsername": {
+          "type": "string",
+          "description": "按自定义账号搜索（时长类产品用）"
+        },
+        "ids": {
+          "type": "string",
+          "description": "子账号 id 集合，多个以英文逗号连接（时长类产品用）"
+        },
+        "remark": {
+          "type": "string",
+          "description": "按备注模糊搜索（动态产品用）"
+        },
+        "subAccounts": {
+          "type": "string",
+          "description": "子账号 id 集合，多个以英文逗号连接（动态产品用）"
+        },
+        "countryList": {
+          "type": "string",
+          "description": "国家编码，多个以英文逗号分隔（动态产品用）"
+        },
+        "search_type": {
+          "type": "integer",
+          "description": "搜索类型：0=自定义账密，1=子账号 IP，2=备注；搜索值放 searchArr（时长类产品用）",
+          "enum": [
+            0,
+            1,
+            2
+          ]
+        },
+        "searchArr": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "搜索值列表，与 search_type 配合（时长类产品用）"
+        }
+      },
+      "required": [
+        "product",
+        "page",
+        "pagesize"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sub_account_set_credentials",
+    "title": "自定义子账号账密",
+    "description": "为子账号设置自定义用户名和密码，一次可传多个；覆盖 content 里每个子账号的账号与密码。",
+    "readOnly": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/externalapi/device/batchUpdateSubAccountUsernamePassword",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      },
+      "static-standard": {
+        "type": 1,
+        "status": 1,
+        "native": 0
+      },
+      "static-native": {
+        "type": 1,
+        "status": 1,
+        "native": 1
+      },
+      "static-isp-native": {
+        "type": 1,
+        "status": 1,
+        "native": 2
+      },
+      "static-ipv6": {
+        "type": 1,
+        "status": 1,
+        "native": 1,
+        "version": 6
+      },
+      "datacenter": {
+        "type": 2,
+        "status": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly",
+            "static-standard",
+            "static-native",
+            "static-isp-native",
+            "static-ipv6",
+            "datacenter"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限），static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生），static-ipv6=静态住宅（IPv6），datacenter=数据中心"
+        },
+        "content": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "子账号id。"
+              },
+              "customUsername": {
+                "type": "string",
+                "description": "自定义用户名。只能是大小字母和数字。长度8-30个字符之间"
+              },
+              "customPassword": {
+                "type": "string",
+                "description": "自定义密码。只能是大小字母和数字。长度8-30个字符之间"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "customUsername",
+              "customPassword"
+            ]
+          },
+          "description": "要修改的子账号列表，每项写子账号 id、自定义用户名、自定义密码"
+        }
+      },
+      "required": [
+        "product",
+        "content"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sub_account_set_limit_flow",
+    "title": "设置子账号流量上限",
+    "description": "设置动态住宅某个子账号在一个周期内的流量上限，达到上限断开连接，下个周期恢复；同一个子账号只允许设置一个周期。",
+    "readOnly": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/externalapi/tool/accountLimitFlowSet",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        },
+        "account": {
+          "type": "string",
+          "description": "子账号id"
+        },
+        "cycle": {
+          "type": "string",
+          "description": "限制周期：0=每天，1=每周，2=每月，3=每季度，4=每年",
+          "enum": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4"
+          ]
+        },
+        "limit_flow": {
+          "type": "string",
+          "description": "上限流量，单位 GB"
+        }
+      },
+      "required": [
+        "product",
+        "account"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sub_account_set_limit_flow_batch",
+    "title": "批量设置子账号流量上限",
+    "description": "批量设置多个动态住宅子账号在同一周期内各自的流量上限；同一个子账号只允许设置一个周期。",
+    "readOnly": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/externalapi/tool/accountLimitFlowBatchSet",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        },
+        "cycle": {
+          "type": "string",
+          "description": "限制周期：0=每天，1=每周，2=每月，3=每季度，4=每年",
+          "enum": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4"
+          ]
+        },
+        "accounts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "account": {
+                "type": "string",
+                "description": "子账号 id"
+              },
+              "limit_flow": {
+                "type": "string",
+                "description": "上限流量，单位 GB"
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "子账号配置列表，每项写子账号 id（account）和上限流量 GB（limit_flow）"
+        }
+      },
+      "required": [
+        "product"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sub_account_set_password_batch",
+    "title": "批量改子账号密码",
+    "description": "批量修改时长类子账号的密码，只改密码不改用户名；密码只能是字母和数字，长度 8 到 30。",
+    "readOnly": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/externalapi/device/batchUpdateSubAccountPassword",
+    "products": {
+      "static-standard": {
+        "type": 1,
+        "status": 1,
+        "native": 0
+      },
+      "static-native": {
+        "type": 1,
+        "status": 1,
+        "native": 1
+      },
+      "static-isp-native": {
+        "type": 1,
+        "status": 1,
+        "native": 2
+      },
+      "datacenter": {
+        "type": 2,
+        "status": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "static-standard",
+            "static-native",
+            "static-isp-native",
+            "datacenter"
+          ],
+          "description": "产品：static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生），datacenter=数据中心"
+        },
+        "content": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "子账号id。"
+              },
+              "customPassword": {
+                "type": "string",
+                "description": "自定义密码。只能是大小字母和数字。长度8-30个字符之间"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "customPassword"
+            ]
+          },
+          "description": "要修改的子账号列表，每项写子账号 id 与新密码"
+        }
+      },
+      "required": [
+        "product",
+        "content"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sub_account_set_whitelist",
+    "title": "设置子账号白名单",
+    "description": "设置动态住宅某个子账号的 IP 白名单，整体覆盖原有列表。",
+    "readOnly": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/externalapi/tool/setSubAccountWhiteList",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        },
+        "id": {
+          "type": "string",
+          "description": "子账号 id"
+        },
+        "ip_list": {
+          "type": "string",
+          "description": "白名单 IP 列表，多个以英文逗号分隔"
+        }
+      },
+      "required": [
+        "product",
+        "id",
+        "ip_list"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sub_account_toggle_port",
+    "title": "批量开关端口连接",
+    "description": "批量开启或关闭静态住宅子账号的 IP 端口连接状态。",
+    "readOnly": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/externalapi/device/portEnableUpdateList",
+    "products": {
+      "static-standard": {
+        "type": 1,
+        "status": 1,
+        "native": 0
+      },
+      "static-native": {
+        "type": 1,
+        "status": 1,
+        "native": 1
+      },
+      "static-isp-native": {
+        "type": 1,
+        "status": 1,
+        "native": 2
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "static-standard",
+            "static-native",
+            "static-isp-native"
+          ],
+          "description": "产品：static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生）"
+        },
+        "ids": {
+          "type": "string",
+          "description": "子账号id集合,多个以英文逗号分隔"
+        },
+        "use_ip_port": {
+          "type": "integer",
+          "description": "开关状态：0=关闭，1=开启",
+          "enum": [
+            0,
+            1
+          ]
+        }
+      },
+      "required": [
+        "product",
+        "ids"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sub_account_update",
+    "title": "修改子账号备注",
+    "description": "修改动态住宅某个子账号的备注。",
+    "readOnly": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/externalapi/device/accountUpdate",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        },
+        "id": {
+          "type": "string",
+          "description": "子账号id"
+        },
+        "remark": {
+          "type": "string",
+          "description": "备注"
+        }
+      },
+      "required": [
+        "product",
+        "id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sub_account_update_batch",
+    "title": "批量修改子账号",
+    "description": "批量修改多个动态住宅子账号的备注或 IP 切换间隔，ids 为英文逗号连接的子账号 id。",
+    "readOnly": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/externalapi/device/accountUpdateList",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        },
+        "ids": {
+          "type": "string",
+          "description": "子账号id集，以英文逗号连接"
+        },
+        "remark": {
+          "type": "string",
+          "description": "备注"
+        },
+        "changeInterval": {
+          "type": "integer",
+          "description": "IP 切换间隔，单位分钟，1 到 120"
+        }
+      },
+      "required": [
+        "product",
+        "ids"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "sub_account_whitelist",
+    "title": "子账号白名单",
+    "description": "读取动态住宅某个子账号的 IP 白名单。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/tool/getSubAccountWhiteList",
+    "products": {
+      "dynamic-no-expiry": {
+        "type": 0,
+        "status": 0
+      },
+      "dynamic-monthly": {
+        "type": 0,
+        "status": 0,
+        "is_month": 1
+      }
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": [
+            "dynamic-no-expiry",
+            "dynamic-monthly"
+          ],
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
+        },
+        "id": {
+          "type": "string",
+          "description": "子账号 id"
+        }
+      },
+      "required": [
+        "product",
+        "id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "user_balance",
+    "title": "账户余额",
+    "description": "查询当前账号余额，data 直接是金额字符串，单位元。充值余额与赠送余额的拆分看 user_info。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/user/getGetUserInfo",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "pick": "money"
+  },
+  {
+    "name": "user_info",
+    "title": "账号信息",
+    "description": "查询当前账号的基本信息与余额：money 总余额、origin_money 充值余额、give_money 赠送余额。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/user/getGetUserInfo",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "user_price",
+    "title": "用户价格",
+    "description": "查询当前账号各产品的实际价格，含管理员给该账号设置的自定义价；下单前用它估算费用。",
+    "readOnly": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/externalapi/tool/getUserCustomPriceInfo",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  }
+]
