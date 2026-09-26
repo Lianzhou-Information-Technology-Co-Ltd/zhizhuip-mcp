@@ -77,7 +77,8 @@ export async function callApi(
   if (!expanded) return text(`product 必须是 ${Object.keys(tool.products ?? {}).join('、')} 之一`, true);
   const form = toForm(expanded).toString();
   const url = new URL(cfg.baseUrl + tool.path);
-  const headers: Record<string, string> = { token: cfg.token, accept: 'application/json', 'user-agent': 'zhizhuip mcp' };
+  // 语言头必须显式给：不给时运行时默认发 *，后端按语言头自动切换语言时解析不了 *，任何接口都会返回空的 HTTP 500
+  const headers: Record<string, string> = { token: cfg.token, accept: 'application/json', 'accept-language': 'zh-CN', 'user-agent': 'zhizhuip mcp' };
   const init: RequestInit = { method: tool.method, headers, signal: AbortSignal.timeout(cfg.timeoutMs) };
   if (tool.method === 'GET') {
     url.search = form;

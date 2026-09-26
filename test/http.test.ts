@@ -83,6 +83,7 @@ describe('callApi', () => {
     expect(seen.url).toBe('https://example.test/externalapi/user/getGetUserInfo?page=1&type=2&status=1&is_mcp_send=1');
     expect((seen.init?.headers as Record<string, string>).token).toBe('sk-secret-xyz');
     expect((seen.init?.headers as Record<string, string>)['user-agent']).toBe('zhizhuip mcp');
+    expect((seen.init?.headers as Record<string, string>)['accept-language']).toBe('zh-CN');
     expect(r.isError).toBeUndefined();
     expect(JSON.parse(textOf(r))).toEqual({ code: 1, msg: 'ok', data: { total: 9 } });
   });
