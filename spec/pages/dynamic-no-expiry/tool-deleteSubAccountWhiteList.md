@@ -46,6 +46,10 @@ paths:
                   type: integer
                   description: 子账号id
                   example: 1
+              required:
+                - type
+                - status
+                - is_month
             examples: {}
       responses:
         '200':

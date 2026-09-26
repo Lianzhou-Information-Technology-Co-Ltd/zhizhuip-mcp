@@ -622,13 +622,13 @@ exports[`spec/tools.json > 完整快照 1`] = `
     "title": "官网价格",
   },
   {
-    "description": "会从账户余额扣费。把静态住宅子账号的带宽升级到 bandwidth_num；可选档位和价格用 bandwidth_package_list 查。",
+    "description": "会从账户余额扣费。把静态住宅子账号的带宽升级到 bandwidth_num；可选档位和价格用 bandwidth_package_list 查；有已过期的子账号时要先续费再升级。",
     "destructive": true,
     "inputSchema": {
       "additionalProperties": false,
       "properties": {
         "bandwidth_num": {
-          "description": "升级后的带宽值，填 bandwidth_package_list 返回的档位",
+          "description": "升级后的目标带宽，必须大于子账号当前带宽，可选值用 bandwidth_package_list 查",
           "type": "integer",
         },
         "product": {
@@ -641,7 +641,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
           "type": "string",
         },
         "sub_accounts": {
-          "description": "要升级的子账号 id 列表",
+          "description": "要升级的子账号 id 列表，单次最多 200 个",
           "items": {
             "description": "子账号 id",
             "type": "string",
@@ -1526,7 +1526,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
     "title": "批量删除子账号",
   },
   {
-    "description": "查询动态住宅某个子账号在日期区间内每天的流量。区间最多 30 天，结束日期不能晚于今天。",
+    "description": "查询动态住宅某个子账号在日期区间内每天的流量，返回的 flow 单位 MB。区间最多 30 天，结束日期不能晚于今天。",
     "destructive": false,
     "inputSchema": {
       "additionalProperties": false,
@@ -2100,7 +2100,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
       "additionalProperties": false,
       "properties": {
         "ids": {
-          "description": "子账号id集合,多个以英文逗号分隔",
+          "description": "子账号id集合,多个以英文逗号分隔。单次最多200个",
           "type": "string",
         },
         "product": {

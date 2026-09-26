@@ -252,6 +252,15 @@ describe('spec/tools.json', () => {
     }
   });
 
+  it('跟上文档站补的后端限制：带宽升级与开关端口单次 200 个、升级填目标带宽、过期要先续费、流量单位 MB', () => {
+    const up = byName('order_bandwidth_upgrade');
+    expect(up.description).toMatch(/先续费/);
+    expect(up.inputSchema.properties.sub_accounts.description).toMatch(/200/);
+    expect(up.inputSchema.properties.bandwidth_num.description).toMatch(/大于子账号当前带宽/);
+    expect(byName('sub_account_toggle_port').inputSchema.properties.ids.description).toMatch(/200/);
+    expect(byName('sub_account_flow').description).toMatch(/MB/);
+  });
+
   it('spec/tools.json 与当前生成结果一致（改了 overrides 要重新 npm run build-spec）', () => {
     expect(JSON.parse(readFileSync(new URL('../spec/tools.json', import.meta.url), 'utf8'))).toEqual(tools);
   });

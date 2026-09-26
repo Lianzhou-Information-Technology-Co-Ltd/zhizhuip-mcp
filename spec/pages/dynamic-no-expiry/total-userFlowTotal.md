@@ -13,7 +13,7 @@ paths:
     get:
       summary: 获取动态住宅主账号流量
       deprecated: false
-      description: 获取动态住宅子账号流量记录
+      description: 获取动态住宅（永久）主账号流量记录
       tags:
         - 用户IP子账号管理/动态住宅流量子账号(永久)
       parameters:

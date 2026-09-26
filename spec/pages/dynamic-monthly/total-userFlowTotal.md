@@ -13,7 +13,7 @@ paths:
     get:
       summary: 获取动态住宅主账号流量
       deprecated: false
-      description: 获取动态住宅子账号流量记录
+      description: 获取动态住宅（期限）主账号流量记录
       tags:
         - 用户IP子账号管理/动态住宅流量子账号(期限)
       parameters:
@@ -73,6 +73,14 @@ paths:
                   - msg
                   - time
                   - data
+              example:
+                code: 1
+                msg: 获取成功!
+                time: '1736339753'
+                data:
+                  use: 10.14
+                  base: 39.86
+                  total: 50
           headers: {}
           x-apifox-name: 成功
       security: []

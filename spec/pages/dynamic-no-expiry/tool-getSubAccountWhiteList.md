@@ -20,21 +20,21 @@ paths:
         - name: type
           in: query
           description: 套餐类型：0=全球动态住宅，1=全球静态住宅，2=全球数据中心。此处固定为：0
-          required: false
+          required: true
           example: 0
           schema:
             type: integer
         - name: status
           in: query
           description: 计费模式：0=按流量，1=按时长，2=按ip数。<b>此处固定为：0</b>
-          required: false
+          required: true
           example: 0
           schema:
             type: integer
         - name: is_month
           in: query
           description: 流量是否限时:0=永久,1=期限<b>此处固定为：0</b>
-          required: false
+          required: true
           example: 0
           schema:
             type: integer

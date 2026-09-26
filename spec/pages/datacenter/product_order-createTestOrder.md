@@ -42,9 +42,8 @@ paths:
                   type: integer
                 country:
                   description: >-
-                    静态住宅国家编码code。<a target="_blank"
-                    href="/api-117919471">静态住宅对应国家列表</a>可获取国家编码。支持的静态住宅国家列表可在<a
-                    href="/api-117919471" target="_blank">静态住宅国家</a>查询
+                    数据中心国家编码code。<a target="_blank"
+                    href="/api-117932943">数据中心对应国家列表</a>可获取国家编码。
                   example: US
                   type: string
                 agree:
@@ -53,8 +52,8 @@ paths:
                   type: string
                 city:
                   description: >-
-                    静态住宅城市名称。在<a target="_blank"
-                    href="/api-117416129">静态住宅对应城市列表</a>可获取城市名称。不传默认随机。
+                    数据中心城市名称。在<a target="_blank"
+                    href="/api-117932961">数据中心对应城市列表</a>可获取城市名称。不传默认随机。
                   example: Los Angeles
                   type: string
                 use_random_username:

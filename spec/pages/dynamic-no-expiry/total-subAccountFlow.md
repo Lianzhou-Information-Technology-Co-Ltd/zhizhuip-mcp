@@ -33,14 +33,14 @@ paths:
             type: integer
         - name: start_date
           in: query
-          description: 查询开始时间
+          description: 查询开始时间。格式 YYYY-MM-DD，区间最多 30 天，结束日期不能晚于今天
           required: true
           example: '2025-07-21'
           schema:
             type: string
         - name: end_date
           in: query
-          description: 查询结束时间
+          description: 查询结束时间。格式 YYYY-MM-DD，区间最多 30 天，结束日期不能晚于今天
           required: true
           example: '2025-07-23'
           schema:
@@ -81,7 +81,11 @@ paths:
                               type: string
                             flow:
                               type: string
+                              description: 消耗流量(单位Mb)
                           required:
+                            - time
+                            - flow
+                          x-apifox-orders:
                             - time
                             - flow
                       total:
@@ -89,30 +93,19 @@ paths:
                     required:
                       - rows
                       - total
+                    x-apifox-orders:
+                      - rows
+                      - total
                 required:
                   - code
                   - msg
                   - time
                   - data
-              example:
-                code: 1
-                msg: 获取成功!
-                time: '1753240306'
-                data:
-                  rows:
-                    - time: '2025-07-18'
-                      flow: '8407.17'
-                    - time: '2025-07-19'
-                      flow: '4844.14'
-                    - time: '2025-07-20'
-                      flow: '5094.96'
-                    - time: '2025-07-21'
-                      flow: '8336.39'
-                    - time: '2025-07-22'
-                      flow: '9700.24'
-                    - time: '2025-07-23'
-                      flow: '2967.32'
-                  total: 6
+                x-apifox-orders:
+                  - code
+                  - msg
+                  - time
+                  - data
           headers: {}
           x-apifox-name: 成功
       security: []

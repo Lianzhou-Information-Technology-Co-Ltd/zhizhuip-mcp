@@ -13,7 +13,7 @@ paths:
     post:
       summary: 子账号带宽升级（运营商原生）
       deprecated: false
-      description: ''
+      description: 有已过期的子账号时，要先续费再升级
       tags:
         - 用户IP子账号管理/静态住宅（运营商原生）时长子账号
       parameters:
@@ -47,14 +47,14 @@ paths:
             type: integer
         - name: bandwidth_num
           in: query
-          description: 要升级的带宽
+          description: 升级后的目标带宽，必须大于子账号当前带宽，可选值用带宽套餐列表查
           required: true
           example: 10
           schema:
             type: integer
         - name: sub_accounts[]
           in: query
-          description: 子账号
+          description: 要升级的子账号 id 列表。单次最多200个
           required: true
           example:
             - '23'

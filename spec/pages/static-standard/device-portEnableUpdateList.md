@@ -40,7 +40,7 @@ paths:
                   description: 原生类别:0=非原生，1=原生。<b>此处固定为：0</b>
                   example: 0
                 ids:
-                  description: 子账号id集合,多个以英文逗号分隔
+                  description: 子账号id集合,多个以英文逗号分隔。单次最多200个
                   example: 1,2,3
                   type: string
                 use_ip_port:
