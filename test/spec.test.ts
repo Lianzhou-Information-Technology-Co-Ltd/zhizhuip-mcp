@@ -215,11 +215,19 @@ describe('spec/tools.json', () => {
     expect(byName('sub_account_add').inputSchema.properties.country.description).not.toMatch(/如 US。/);
   });
 
-  it('下单与续费工具的 conpon_id 都是 integer，与 coupon_list 返回的 id 一致；IPv6 续费没有这个参数', () => {
-    for (const n of ['order_buy_dynamic', 'order_buy_time_ip', 'order_buy_ipv6', 'order_renew']) {
+  it('下单与续费工具的 conpon_id 都是 integer，与 coupon_list 返回的 id 一致；IPv6 购买与续费都没有这个参数', () => {
+    for (const n of ['order_buy_dynamic', 'order_buy_time_ip', 'order_renew']) {
       expect(byName(n).inputSchema.properties.conpon_id.type, n).toBe('integer');
     }
-    expect(byName('order_renew_ipv6').inputSchema.properties.conpon_id).toBeUndefined();
+    for (const n of ['order_buy_ipv6', 'order_renew_ipv6']) expect(byName(n).inputSchema.properties.conpon_id, n).toBeUndefined();
+  });
+
+  it('后端核对第四轮：IPv6 续费不能选 7 天而购买可以、测试 IP 会扣余额', () => {
+    const renewTimelen = byName('order_renew_ipv6').inputSchema.properties.content.items?.properties?.timelen;
+    expect(renewTimelen?.enum).toEqual([1, 2, 3, 4]);
+    expect(renewTimelen?.description).not.toMatch(/0=7天/);
+    expect(byName('order_buy_ipv6').inputSchema.properties.timelen.enum).toEqual([0, 1, 2, 3, 4]);
+    expect(byName('order_buy_test_ip').description).toMatch(/余额/);
   });
 
   it('spec/tools.json 与当前生成结果一致（改了 overrides 要重新 npm run build-spec）', () => {

@@ -121,8 +121,8 @@ tools:
     title: 子账号白名单
     description: 读取动态住宅某个子账号的 IP 白名单。
     readOnly: true
-    products: [dynamic-no-expiry, dynamic-monthly] # 文档缺陷兜底：页面挂在永久分组却固定 is_month=1，后端两种动态产品都接受
-    params:
+    products: [dynamic-no-expiry, dynamic-monthly] # 文档站只在永久分组有这一页，后端 is_month 0 和 1 都接受
+    params: # 文档缺陷兜底：查询页 id 标可选，后端 require
       id: { required: true, description: 子账号 id }
   /externalapi/bandwidth/getBandwidthList:
     name: bandwidth_package_list
@@ -210,11 +210,11 @@ tools:
     name: sub_account_set_limit_flow_batch
     title: 批量设置子账号流量上限
     description: 批量设置多个动态住宅子账号在同一周期内各自的流量上限；同一个子账号只允许设置一个周期。
-    params: # 文档缺陷兜底：cycle、accounts 文档标可选，后端 require，每项必须同时有 account 与 limit_flow（Tool.php accountLimitFlowBatchSet）
+    params: # 文档缺陷兜底：cycle 文档标可选，后端 require（Tool.php accountLimitFlowBatchSet）
       cycle: { required: true, enum: [0, 1, 2, 3, 4, 5], description: 限制周期：0=每天，1=每周，2=每月，3=每季度，4=每年，5=永久（按累计用量，不清零） }
-      accounts: { required: true, description: 子账号配置列表，每项写子账号 id（account）和上限流量 GB（limit_flow） }
-      "accounts[0][account]": { required: true, description: 子账号 id }
-      "accounts[0][limit_flow]": { required: true, description: 上限流量，单位 GB，0 到 1000000；传 0 表示删除该子账号的流量限制 }
+      accounts: { description: 子账号配置列表，每项写子账号 id（account）和上限流量 GB（limit_flow） }
+      "accounts[0][account]": { description: 子账号 id }
+      "accounts[0][limit_flow]": { description: 上限流量，单位 GB，0 到 1000000；传 0 表示删除该子账号的流量限制 }
   /externalapi/device/accountDelete:
     name: sub_account_delete
     title: 删除子账号
@@ -258,20 +258,19 @@ tools:
   /externalapi/product_order/createIpv6Order:
     name: order_buy_ipv6
     title: 购买 IPv6 时长 IP
-    description: 会从账户余额扣费。购买静态住宅 IPv6 时长 IP 子账号，num 为 IP 数量。
+    description: 会从账户余额扣费。购买静态住宅 IPv6 时长 IP 子账号，num 为 IP 数量；IPv6 购买不支持优惠券。
     destructive: true
     params:
       timelen: { enum: [0, 1, 2, 3, 4], description: 购买时长：0=7天，1=30天，2=90天，3=180天，4=360天 }
       agree: { enum: [SOCKS5, HTTP, HTTPS], description: 协议 }
       city: { description: 城市名称，取 city_list 返回的名称；不传随机 }
-      conpon_id: { type: integer, description: 优惠券 id，用 coupon_list 查 } # 文档缺陷兜底：IPv6 购买页把 conpon_id 写成 string，其它下单接口都是 integer
       ip_str: { description: 指定的 IPv6 段 }
       bandwidth_num: { description: 购买时选定的增值带宽 }
       remark: { description: 备注 }
   /externalapi/product_order/createTestOrder:
     name: order_buy_test_ip
     title: 购买测试 IP
-    description: 会消耗账号的测试额度。购买静态住宅或数据中心的时长测试 IP，有效期默认 1 天，只用于业务测试。
+    description: 会从账户余额扣费并占用本月测试额度。购买静态住宅或数据中心的时长测试 IP，每单按账号设定的测试订单金额扣款；本月额度用完或本次数量超过剩余额度会被拒绝。有效期默认 1 天，只用于业务测试。
     destructive: true
     params:
       agree: { enum: [SOCKS5, HTTP, HTTPS], description: 协议 }
@@ -299,7 +298,7 @@ tools:
       content: { description: 续费内容，按国家分组，每组写 ids、country、timelen }
       "content[0][ids]": { description: 该组要续费的子账号 id 列表 }
       "content[0][country]": { description: 这组子账号的国家编码，取 sub_account_list 返回的 country }
-      "content[0][timelen]": { enum: [0, 1, 2, 3, 4], description: 续费时长：0=7天，1=30天，2=90天，3=180天，4=360天 }
+      "content[0][timelen]": { enum: [1, 2, 3, 4], description: 续费时长：1=30天，2=90天，3=180天，4=360天；IPv6 续费不支持 7 天 }
   /externalapi/product_order/bandwidthUpgradeOrder:
     name: order_bandwidth_upgrade
     title: 子账号带宽升级
@@ -312,8 +311,8 @@ tools:
     name: order_refund_apply
     title: 申请退单
     description: 为静态住宅的一个子账号申请退单，提交后由人工审核，不会立即退款。后端限制：只能在下单后 1 天内申请；已续费、有进行中的带宽升级订单、消费记录已开票的子账号不能退；同一子账号重复申请会被拒。
-    params: # 文档缺陷兜底：remark 写成 integer
-      remark: { type: string, description: 退单原因 }
+    params:
+      remark: { description: 退单原因 }
       id: { description: 子账号 id }
   /externalapi/product_order/bookingIPArea:
     name: ip_booking

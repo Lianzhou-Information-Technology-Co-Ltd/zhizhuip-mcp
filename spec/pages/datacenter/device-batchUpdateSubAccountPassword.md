@@ -13,7 +13,7 @@ paths:
     put:
       summary: 批量修改数据中心时长IP子账号密码
       deprecated: false
-      description: 自定义静态住宅时长IP子账号用户名和密码
+      description: 数据中心IP子账号用户名和密码
       tags:
         - 用户IP子账号管理/数据中心时长子账号
       parameters: []
@@ -29,7 +29,7 @@ paths:
                   type: string
                 type:
                   description: 套餐类型：0=全球动态住宅，1=全球静态住宅，2=全球数据中心。<b>此处固定为：2</b>
-                  example: 1
+                  example: 2
                   type: integer
                 status:
                   description: 计费模式：0=按流量，1=按时长，2=按ip数。<b>此处固定为：1</b>

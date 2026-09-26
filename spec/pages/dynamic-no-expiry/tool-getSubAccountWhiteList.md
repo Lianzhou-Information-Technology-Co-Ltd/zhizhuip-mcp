@@ -33,7 +33,7 @@ paths:
             type: integer
         - name: is_month
           in: query
-          description: 流量是否限时:0=永久,1=期限<b>此处固定为：1</b>
+          description: 流量是否限时:0=永久,1=期限<b>此处固定为：0</b>
           required: false
           example: 0
           schema:

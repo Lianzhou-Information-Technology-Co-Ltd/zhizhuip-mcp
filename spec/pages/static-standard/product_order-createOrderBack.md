@@ -32,9 +32,9 @@ paths:
                   example: 1
                   type: integer
                 remark:
+                  type: string
                   description: 退单备注
                   example: test
-                  type: integer
                 id:
                   description: 子账号id
                   example: 14

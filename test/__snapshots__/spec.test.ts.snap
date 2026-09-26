@@ -736,7 +736,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
     "title": "购买动态住宅流量",
   },
   {
-    "description": "会从账户余额扣费。购买静态住宅 IPv6 时长 IP 子账号，num 为 IP 数量。",
+    "description": "会从账户余额扣费。购买静态住宅 IPv6 时长 IP 子账号，num 为 IP 数量；IPv6 购买不支持优惠券。",
     "destructive": true,
     "fixed": {
       "native": 1,
@@ -763,10 +763,6 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "city": {
           "description": "城市名称，取 city_list 返回的名称；不传随机",
           "type": "string",
-        },
-        "conpon_id": {
-          "description": "优惠券 id，用 coupon_list 查",
-          "type": "integer",
         },
         "country": {
           "description": "静态住宅国家编码code。静态住宅（IPV6）对应国家列表可获取国家编码。支持的静态住宅国家列表可在静态住宅（IPV6）国家查询。国家用 ISO 3166-1 二字码，如 US",
@@ -819,7 +815,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
     "title": "购买 IPv6 时长 IP",
   },
   {
-    "description": "会消耗账号的测试额度。购买静态住宅或数据中心的时长测试 IP，有效期默认 1 天，只用于业务测试。",
+    "description": "会从账户余额扣费并占用本月测试额度。购买静态住宅或数据中心的时长测试 IP，每单按账号设定的测试订单金额扣款；本月额度用完或本次数量超过剩余额度会被拒绝。有效期默认 1 天，只用于业务测试。",
     "destructive": true,
     "inputSchema": {
       "additionalProperties": false,
@@ -1234,9 +1230,8 @@ exports[`spec/tools.json > 完整快照 1`] = `
                 "type": "array",
               },
               "timelen": {
-                "description": "续费时长：0=7天，1=30天，2=90天，3=180天，4=360天",
+                "description": "续费时长：1=30天，2=90天，3=180天，4=360天；IPv6 续费不支持 7 天",
                 "enum": [
-                  0,
                   1,
                   2,
                   3,

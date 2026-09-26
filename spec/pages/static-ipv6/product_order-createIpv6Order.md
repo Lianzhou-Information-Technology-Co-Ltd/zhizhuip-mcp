@@ -35,12 +35,6 @@ paths:
                   description: 计费模式：0=按流量，1=按时长，2=按ip数。<b>此处固定为：1</b>
                   example: 1
                   type: integer
-                conpon_id:
-                  description: >-
-                    优惠券id。根据<a href="/api-116480625"
-                    target="_blank">查询优惠券列表</a>获取对应的优惠券id
-                  example: '0'
-                  type: string
                 num:
                   description: 需要购买的子账号数量。范围：1-5000之间
                   example: 4096
@@ -230,6 +224,35 @@ paths:
                   - msg
                   - time
                   - data
+              example:
+                code: 1
+                msg: 购买成功
+                time: '1697513125'
+                data:
+                  subAccounts:
+                    - id: '22'
+                      is_diff: 0
+                      agree: SOCKS5
+                      country: US
+                      ip: 127.0.0.1
+                      target: demo.demo.com
+                      port: 5001
+                      username: demo-22
+                      password: demo
+                      is_bind: 否
+                      remark: ''
+                      native: 1
+                      expiresIn: 1729147431
+                      bindUser: demo-22
+                      bindPassword: demo
+                      countdown: 30.0天
+                      createtime: '1970-01-01 08:00:00'
+                      state: ''
+                      city: ''
+                      bill: 0
+                      countryName: 美国
+                      status: 1
+                  orderId: '20241218174853186157934666'
           headers: {}
           x-apifox-name: 成功
       security: []

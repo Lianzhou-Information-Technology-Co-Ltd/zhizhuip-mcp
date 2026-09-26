@@ -51,14 +51,14 @@ paths:
           description: >-
             子账号配置数组，格式：[{"account": 1001, "limit_flow": 1000}, {"account": 1002,
             "limit_flow": 2000}]
-          required: false
-          example: '5551'
+          required: true
+          example: 5551
           schema:
-            type: string
+            type: integer
         - name: accounts[0][limit_flow]
           in: query
           description: 限制流量:G, 传 0 表示删除该子账号的流量限制
-          required: false
+          required: true
           example: 3
           schema:
             type: integer
@@ -66,9 +66,9 @@ paths:
           in: query
           description: ''
           required: false
-          example: '554'
+          example: 554
           schema:
-            type: string
+            type: integer
         - name: accounts[1][limit_flow]
           in: query
           description: ''

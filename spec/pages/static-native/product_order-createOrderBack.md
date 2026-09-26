@@ -13,7 +13,7 @@ paths:
     post:
       summary: 静态住宅（原生）时长子账号申请退单
       deprecated: false
-      description: 静态住宅（非原生）时长子账号申请退单。下单 1 天内、未续费、无进行中的带宽升级单、消费记录未开票
+      description: 静态住宅（原生）时长子账号申请退单。下单 1 天内、未续费、无进行中的带宽升级单、消费记录未开票
       tags:
         - 用户IP子账号管理/静态住宅（原生）时长子账号
       parameters: []
@@ -32,9 +32,9 @@ paths:
                   example: 1
                   type: integer
                 remark:
+                  type: string
                   description: 退单备注
                   example: test
-                  type: integer
                 id:
                   description: 子账号id
                   example: 53

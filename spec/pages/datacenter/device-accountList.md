@@ -13,7 +13,7 @@ paths:
     get:
       summary: 获取数据中心时长子账号列表
       deprecated: false
-      description: 获取静态住宅时长子账号列表
+      description: 获取数据中心IP子账号列表
       tags:
         - 用户IP子账号管理/数据中心时长子账号
       parameters:

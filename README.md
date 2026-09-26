@@ -144,7 +144,7 @@ npx @modelcontextprotocol/inspector -e ZHIZHUIP_TOKEN=你的token -- node <安�
 | sub_account_delete / sub_account_delete_batch | 删除子账号，不可恢复 |
 | order_buy_dynamic | 购买动态住宅流量，扣费 |
 | order_buy_time_ip / order_buy_ipv6 | 购买时长 IP、IPv6 时长 IP，扣费 |
-| order_buy_test_ip | 购买测试 IP，消耗测试额度 |
+| order_buy_test_ip | 购买测试 IP，扣费并占用测试额度 |
 | order_renew / order_renew_ipv6 | 续费，扣费 |
 | order_bandwidth_upgrade | 带宽升级，扣费 |
 | order_refund_apply | 申请退单 |
