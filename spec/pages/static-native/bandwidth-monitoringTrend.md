@@ -13,7 +13,7 @@ paths:
     get:
       summary: 子账号带宽趋势查询
       deprecated: false
-      description: 返回子账号最近半小时的带宽变化趋势
+      description: 返回静态住宅（原生）子账号最近1小时的带宽变化趋势
       tags:
         - 用户IP子账号管理/静态住宅（原生）时长子账号
       parameters:
@@ -130,6 +130,118 @@ paths:
                   - msg
                   - time
                   - data
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    code: 1
+                    msg: 获取成功!
+                    time: '1755321650'
+                    data:
+                      bandwidthList:
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 00
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 01
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 02
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 03
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 04
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 05
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 06
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 07
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 08
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 09
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 10
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 11
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 12
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 13
+                          upstreamTraffic: 0
+                      currentBandwidth: 0
+                      peakBandwidth: 0
+                      reqParams:
+                        endTime: '2025-08-16 13:18:31'
+                        intervalType: fixed
+                        intervalUnit: h
+                        intervalValue: 1
+                        startTime: '2025-08-16 00:00:00'
+                        timeZone: Asia/Shanghai
+                '2':
+                  summary: 成功示例
+                  value:
+                    code: 1
+                    msg: 获取成功!
+                    time: '1755321775'
+                    data:
+                      bandwidthList:
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 00
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 01
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 02
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 03
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 04
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 05
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 06
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 07
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 08
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 09
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 10
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 11
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 12
+                          upstreamTraffic: 0
+                        - downstreamTraffic: 0
+                          time: 2025-08-16 13
+                          upstreamTraffic: 0
+                      currentBandwidth: 0
+                      peakBandwidth: 0
           headers: {}
           x-apifox-name: 成功
       security: []

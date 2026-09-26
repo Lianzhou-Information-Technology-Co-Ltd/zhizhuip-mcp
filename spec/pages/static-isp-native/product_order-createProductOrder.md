@@ -13,7 +13,7 @@ paths:
     post:
       summary: 购买静态住宅（运营商原生）时长IP
       deprecated: false
-      description: 购买静态住宅时长IP
+      description: 购买静态住宅时长IP。用户必须完成邮箱或者手机验证，以及实名验证之后，才能购买
       tags:
         - 用户IP子账号管理/静态住宅（运营商原生）时长子账号
       parameters: []

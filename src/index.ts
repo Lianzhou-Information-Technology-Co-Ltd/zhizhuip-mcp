@@ -55,7 +55,7 @@ const INSTRUCTIONS = `蜘蛛 IP（zhizhuip.com）对外接口 externalapi 的 MC
 - 产品用 product 参数指定：dynamic-no-expiry=动态住宅流量（永久）、dynamic-monthly=动态住宅流量（期限）、static-standard=静态住宅（非原生）、static-native=静态住宅（原生）、static-isp-native=静态住宅（运营商原生）、static-ipv6=静态住宅（IPv6）、datacenter=数据中心。每个工具的 product 枚举只列它支持的产品；没有 product 参数的工具只对应一种产品。
 - 术语："动态类"指两个 dynamic 产品，按流量计费，子账号靠连接串参数切换 IP；"时长类"指 static-* 与 datacenter，按 IP 按天计费。
 - 子账号 id 一律取 sub_account_list 返回的 id 字段，按字符串传（如 "77"）；要传多个时按参数说明用数组或英文逗号连接。
-- 国家参数一律用 ISO 3166-1 二字码（如 US），只有 ip_booking 填国家名称；分页参数 pagesize 最大 100。
+- 国家参数一律用 ISO 3166-1 二字码（如 US），只有 ip_booking 填国家名称。
 - 下单、续费、带宽升级、删除类工具会从余额扣费或不可恢复：调用前先用 user_price、user_balance、coupon_list、sub_account_list 查清价格、余额、优惠券和操作对象，把参数与预计费用告诉用户并取得明确确认。
 - 写操作工具执行前必须经用户确认：支持弹窗的客户端会弹出操作预览让用户点选；没弹窗或不支持的客户端会返回预览和 confirm_token，要把预览原样转述给用户，得到明确同意后再带 confirm_token 用相同参数调用。返回文本说"弹窗没有得到确认"时，可能是客户端没显示弹窗，也可能是用户拒绝了，同样只转述一次，用户不要就停。不要替用户做决定，用户没回答就不要带确认码重试。每一次写操作都要单独确认，同样的操作再做一次也要重新问；确认码在用户回复之前不会生效，提前用会被拒。
 - 工具成功时返回 {code, msg, data} 的 JSON；失败时 isError 为 true，文本就是后端给出的原因。若提示 API Key 无效，请用户到网站 API Keys 页面核对或重新生成 API Key，并更新 ZHIZHUIP_TOKEN。

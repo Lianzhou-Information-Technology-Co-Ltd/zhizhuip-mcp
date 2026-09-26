@@ -52,6 +52,7 @@ paths:
                 - type
                 - status
                 - id
+                - is_month
             examples: {}
       responses:
         '200':

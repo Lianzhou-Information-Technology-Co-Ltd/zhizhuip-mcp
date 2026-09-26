@@ -36,13 +36,14 @@ paths:
                   example: 0
                   type: integer
                 id:
+                  type: integer
                   description: 子账号id
-                  example: '1'
-                  type: string
+                  example: 1
               required:
                 - access_token
                 - type
                 - status
+                - id
             examples: {}
       responses:
         '200':

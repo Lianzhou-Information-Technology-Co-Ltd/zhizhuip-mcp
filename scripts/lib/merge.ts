@@ -285,7 +285,6 @@ export function mergeGroup(pages: Page[], ov: ToolOverride): ToolDef {
   // 4. 通用描述补充
   for (const [name, s] of Object.entries(props)) {
     if ((name === 'country' || name === 'country_code') && !/ISO|名称/.test(s.description ?? '')) appendNote(s, '国家用 ISO 3166-1 二字码，如 US');
-    if (name === 'pagesize' && !/100/.test(s.description ?? '')) s.description = `${s.description ?? '每页数量'}，最大 100`;
   }
 
   // 5. 必填：顶层要在全部变体都必填；部分必填按产品名写进描述

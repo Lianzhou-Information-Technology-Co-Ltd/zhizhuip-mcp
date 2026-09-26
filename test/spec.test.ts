@@ -230,6 +230,28 @@ describe('spec/tools.json', () => {
     expect(byName('order_buy_test_ip').description).toMatch(/余额/);
   });
 
+  it('按文档站统一：国家与州省编码不写二选一、子账号 id 类描述写清、分页上限照文档、购买前提与改密前提', () => {
+    expect(byName('state_list').inputSchema.properties.country_code.description).not.toMatch(/二选一/);
+    const city = byName('city_list').inputSchema.properties;
+    expect(city.country_code.description).not.toMatch(/二选一/);
+    expect(city.state_code.description).not.toMatch(/二选一/);
+
+    expect(byName('bandwidth_detail').inputSchema.properties.subAccount.description).toMatch(/子账号 ?id/);
+    for (const n of ['order_renew', 'order_renew_ipv6']) {
+      const ids = byName(n).inputSchema.properties.content.items?.properties?.ids;
+      expect(ids?.items?.description, n).toMatch(/子账号 ?id/);
+      expect(ids?.items?.description, n).not.toMatch(/产品/);
+    }
+    expect(byName('order_bandwidth_upgrade').inputSchema.properties.sub_accounts.items?.description).toMatch(/子账号 ?id/);
+
+    expect(byName('flow_package_list').inputSchema.properties.pagesize.description).toBe('每页显示数量');
+
+    expect(byName('sub_account_set_password_batch').description).toMatch(/自定义用户名/);
+    for (const n of ['order_buy_dynamic', 'order_buy_time_ip', 'order_buy_ipv6', 'order_buy_test_ip']) {
+      expect(byName(n).description, n).toMatch(/实名验证/);
+    }
+  });
+
   it('spec/tools.json 与当前生成结果一致（改了 overrides 要重新 npm run build-spec）', () => {
     expect(JSON.parse(readFileSync(new URL('../spec/tools.json', import.meta.url), 'utf8'))).toEqual(tools);
   });

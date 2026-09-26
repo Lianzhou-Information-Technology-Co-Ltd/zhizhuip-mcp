@@ -13,7 +13,7 @@ paths:
     post:
       summary: 购买动态住宅流量
       deprecated: false
-      description: 购买动态住宅流量
+      description: 购买动态住宅流量。用户必须完成邮箱或者手机验证，以及实名验证之后，才能购买
       tags:
         - 用户IP子账号管理/动态住宅流量子账号(永久)
       parameters: []
@@ -49,10 +49,6 @@ paths:
                   type: integer
                   description: 流量是否限时:0=永久,1=期限
                   example: 0
-                bill_timelen:
-                  type: integer
-                  description: 流量有效时长:1=30天，2=90天，3=180天
-                  example: 1
               required:
                 - type
                 - status

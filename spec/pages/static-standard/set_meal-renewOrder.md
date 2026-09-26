@@ -59,7 +59,7 @@ paths:
                   example: 8
                 content[0][country]:
                   description: >-
-                    产品对应的国家编码，选填。<a target="_blank"
+                    产品对应的国家编码，必填。<a target="_blank"
                     href="/api-117919471">静态住宅（非原生）对应国家列表</a>可获取国家编码
                   example: US
                   type: string

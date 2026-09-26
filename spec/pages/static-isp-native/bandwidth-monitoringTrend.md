@@ -13,7 +13,7 @@ paths:
     get:
       summary: 子账号带宽趋势查询（运营商原生）
       deprecated: false
-      description: 返回子账号最近半小时的带宽变化趋势
+      description: 返回静态住宅（运营商原生）子账号最近1小时的带宽变化趋势
       tags:
         - 用户IP子账号管理/静态住宅（运营商原生）时长子账号
       parameters:

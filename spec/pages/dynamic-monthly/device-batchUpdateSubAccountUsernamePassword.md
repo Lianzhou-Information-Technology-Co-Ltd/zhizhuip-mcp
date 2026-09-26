@@ -36,9 +36,9 @@ paths:
                   example: 0
                   type: integer
                 is_month:
+                  type: integer
                   description: 流量是否限时:0=永久,1=期限<b>此处固定为：1</b>
-                  example: '1'
-                  type: string
+                  example: 1
                 content[0][id]:
                   description: 子账号id。
                   example: '2'
@@ -67,6 +67,7 @@ paths:
                 - access_token
                 - type
                 - status
+                - is_month
                 - content[0][id]
                 - content[0][customUsername]
                 - content[0][customPassword]
@@ -99,11 +100,6 @@ paths:
                   - msg
                   - time
                   - data
-              example:
-                code: 1
-                msg: 修改成功！
-                time: '2005-03-27 13:48:34'
-                data: null
           headers: {}
           x-apifox-name: 成功
       security: []

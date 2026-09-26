@@ -49,7 +49,7 @@ tools:
     readOnly: true
     params:
       country_id: { description: 国家 id，取 country_list 返回的 id }
-      country_code: { description: 国家编码，取 country_list 返回的编码；和 country_id 二选一 }
+      country_code: { description: 国家编码，取 country_list 返回的编码 }
   /externalapi/common/cityList:
     name: city_list
     title: 城市列表
@@ -58,8 +58,8 @@ tools:
     params:
       country_id: { description: 国家 id，取 country_list 返回的 id }
       state_id: { description: 州或省 id，取 state_list 返回的 id }
-      state_code: { description: 州或省编码，取 state_list 返回的编码；和 state_id 二选一 }
-      country_code: { description: 国家编码，取 country_list 返回的编码；和 country_id 二选一 }
+      state_code: { description: 州或省编码，取 state_list 返回的编码 }
+      country_code: { description: 国家编码，取 country_list 返回的编码 }
   /externalapi/device/providerList:
     name: provider_list
     title: 可用供应商列表
@@ -134,6 +134,8 @@ tools:
     title: 有效期内带宽详情
     description: 查询子账号剩余有效期内已购带宽的详情。后端缓存 120 秒，不要频繁调用。
     readOnly: true
+    params:
+      subAccount: { description: 子账号 id }
   /externalapi/bandwidth/monitoringTrend:
     name: bandwidth_trend
     title: 子账号带宽趋势
@@ -190,7 +192,7 @@ tools:
   /externalapi/device/batchUpdateSubAccountPassword:
     name: sub_account_set_password_batch
     title: 批量改子账号密码
-    description: 批量修改时长类子账号的密码，只改密码不改用户名；密码只能是字母和数字，长度 8 到 30。
+    description: 批量修改时长类子账号的密码，只改密码不改用户名；密码只能是字母和数字，长度 8 到 30。前提是子账号已设置过自定义用户名和密码，系统默认的账密不能用它改，要先用 sub_account_set_credentials 设置。
     params:
       content: { description: 要修改的子账号列表，每项写子账号 id 与新密码 }
   /externalapi/device/portEnableUpdateList:
@@ -220,8 +222,6 @@ tools:
     title: 删除子账号
     description: 不可恢复。删除动态住宅的一个子账号。
     destructive: true
-    params: # 文档缺陷兜底：id 标为可选，后端必填
-      id: { required: true, description: 子账号 id }
   /externalapi/device/accountDeleteList:
     name: sub_account_delete_batch
     title: 批量删除子账号
@@ -231,7 +231,7 @@ tools:
     split:
       - name: order_buy_dynamic
         title: 购买动态住宅流量
-        description: 会从账户余额扣费。购买动态住宅流量，num 为 GB 数；永久套餐流量不过期，期限套餐要用 bill_timelen 指定有效时长。
+        description: 会从账户余额扣费。购买动态住宅流量，num 为 GB 数；永久套餐流量不过期，期限套餐要用 bill_timelen 指定有效时长。账号须先完成邮箱或手机验证以及实名验证才能购买。
         destructive: true
         products: [dynamic-no-expiry, dynamic-monthly]
         params:
@@ -239,7 +239,7 @@ tools:
           conpon_id: { description: 优惠券 id，用 coupon_list 查 }
       - name: order_buy_time_ip
         title: 购买时长 IP
-        description: 会从账户余额扣费。购买静态住宅或数据中心的时长 IP 子账号，num 为 IP 数量。后端限制：num 1 到 300，数据中心单笔不超过 50 个且不支持 7 天档；5 秒内相同参数的重复请求会被拒。
+        description: 会从账户余额扣费。购买静态住宅或数据中心的时长 IP 子账号，num 为 IP 数量。后端限制：num 1 到 300，数据中心单笔不超过 50 个且不支持 7 天档；5 秒内相同参数的重复请求会被拒。账号须先完成邮箱或手机验证以及实名验证才能购买。
         destructive: true
         products: [static-standard, static-native, static-isp-native, datacenter]
         params:
@@ -258,7 +258,7 @@ tools:
   /externalapi/product_order/createIpv6Order:
     name: order_buy_ipv6
     title: 购买 IPv6 时长 IP
-    description: 会从账户余额扣费。购买静态住宅 IPv6 时长 IP 子账号，num 为 IP 数量；IPv6 购买不支持优惠券。
+    description: 会从账户余额扣费。购买静态住宅 IPv6 时长 IP 子账号，num 为 IP 数量；IPv6 购买不支持优惠券。账号须先完成邮箱或手机验证以及实名验证才能购买。
     destructive: true
     params:
       timelen: { enum: [0, 1, 2, 3, 4], description: 购买时长：0=7天，1=30天，2=90天，3=180天，4=360天 }
@@ -270,7 +270,7 @@ tools:
   /externalapi/product_order/createTestOrder:
     name: order_buy_test_ip
     title: 购买测试 IP
-    description: 会从账户余额扣费并占用本月测试额度。购买静态住宅或数据中心的时长测试 IP，每单按账号设定的测试订单金额扣款；本月额度用完或本次数量超过剩余额度会被拒绝。有效期默认 1 天，只用于业务测试。
+    description: 会从账户余额扣费并占用本月测试额度。购买静态住宅或数据中心的时长测试 IP，每单按账号设定的测试订单金额扣款；本月额度用完或本次数量超过剩余额度会被拒绝。有效期默认 1 天，只用于业务测试。账号须先完成邮箱或手机验证以及实名验证才能购买。
     destructive: true
     params:
       agree: { enum: [SOCKS5, HTTP, HTTPS], description: 协议 }
@@ -285,6 +285,7 @@ tools:
     params:
       content: { description: 续费内容，按国家分组，每组写 ids、country、timelen，可选 renew_with_bandwidth }
       "content[0][ids]": { description: 该组要续费的子账号 id 列表 }
+      "content[0][ids][0]": { description: 续费的子账号 id }
       "content[0][country]": { description: 这组子账号的国家编码，传 sub_account_list 返回的 country 即可；后端以子账号库里记录的国家为准 }
       "content[0][timelen]": { enum: [0, 1, 2, 3, 4], description: 续费时长：0=7天，1=30天，2=90天，3=180天，4=360天 }
       "content[0][renew_with_bandwidth]": { enum: [0, 1], description: 是否连同带宽一起续费：0=只续子账号，1=子账号和带宽一起续 }
@@ -297,6 +298,7 @@ tools:
     params:
       content: { description: 续费内容，按国家分组，每组写 ids、country、timelen }
       "content[0][ids]": { description: 该组要续费的子账号 id 列表 }
+      "content[0][ids][0]": { description: 续费的子账号 id }
       "content[0][country]": { description: 这组子账号的国家编码，取 sub_account_list 返回的 country }
       "content[0][timelen]": { enum: [1, 2, 3, 4], description: 续费时长：1=30天，2=90天，3=180天，4=360天；IPv6 续费不支持 7 天 }
   /externalapi/product_order/bandwidthUpgradeOrder:
@@ -306,6 +308,7 @@ tools:
     destructive: true
     params:
       sub_accounts: { description: 要升级的子账号 id 列表 }
+      "sub_accounts[0]": { description: 子账号 id }
       bandwidth_num: { description: 升级后的带宽值，填 bandwidth_package_list 返回的档位 }
   /externalapi/product_order/createOrderBack:
     name: order_refund_apply

@@ -13,7 +13,7 @@ paths:
     post:
       summary: 购买数据中心时长IP
       deprecated: false
-      description: 购买数据中心时长IP
+      description: 购买数据中心时长IP。用户必须完成邮箱或者手机验证，以及实名验证之后，才能购买
       tags:
         - 用户IP子账号管理/数据中心时长子账号
       parameters: []

@@ -38,7 +38,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - token 是网站 API Keys 页面生成的 API Key（`sk-` + 32 位十六进制，永久有效），放请求头 `token`。成功 `{code:1,…}`；业务错误 HTTP 200 `{code:0,msg}`；Key 无效或账号停用 HTTP 401 `{code:401,msg:"API Key 无效或已删除"}`；限流 `{code:0,msg:"访问频繁,请稍后再试!"}`，每接口每 IP 30 秒内 300 次，带宽类接口 60 次。
 - 所有控制器用 `request->param()` 取参，GET 和 POST 都收，所以文档里的 PUT/DELETE 一律发 POST；只有子账号列表有几个参数只从 query 读，所以只读工具必须走 GET。
-- 购买接口后端校验：`num` 1 到 3000，数据中心单笔不超过 50 个且不支持 7 天档；`agree` 默认 SOCKS5，`country` 默认 US；5 秒内相同参数重复请求被拒。续费一次最多 200 个子账号，不回写自动续费设置。预约 IP 只登记需求并给管理员建待办，不扣费。
+- 购买接口后端校验：`num` 1 到 300，数据中心单笔不超过 50 个且不支持 7 天档；下单前要求账号已完成邮箱或手机验证与实名验证；`agree` 默认 SOCKS5，`country` 默认 US；5 秒内相同参数重复请求被拒。续费一次最多 200 个子账号，不回写自动续费设置。预约 IP 只登记需求并给管理员建待办，不扣费。
 - 子账号流量查询日期区间最多 30 天，结束日期不晚于今天。IP 段库存的分页参数后端就叫 `pageSize`。
 
 ## 规则

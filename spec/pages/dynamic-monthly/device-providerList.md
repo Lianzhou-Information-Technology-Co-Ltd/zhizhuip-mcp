@@ -27,10 +27,10 @@ paths:
         - name: is_month
           in: query
           description: 流量是否限时:0=永久,1=期限<b>此处固定为：1</b>
-          required: false
-          example: '1'
+          required: true
+          example: 1
           schema:
-            type: string
+            type: integer
       responses:
         '200':
           description: ''
@@ -56,14 +56,6 @@ paths:
                   - msg
                   - time
                   - data
-              example:
-                code: 1
-                msg: 获取成功!
-                time: '1748312417'
-                data:
-                  - '275'
-                  - '4'
-                  - '253'
           headers: {}
           x-apifox-name: 成功
       security: []

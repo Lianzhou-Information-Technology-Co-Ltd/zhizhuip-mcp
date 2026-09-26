@@ -43,7 +43,7 @@ paths:
                   type: integer
                 content[0][country]:
                   description: >-
-                    产品对应的国家编码，选填。<a target="_blank"
+                    产品对应的国家编码，必填。<a target="_blank"
                     href="/api-117932943">数据中心对应国家列表</a>可获取国家编码
                   example: US
                   type: string
@@ -81,6 +81,7 @@ paths:
                 - content[0][ids][0]
                 - content[0][ids][1]
                 - content[0][timelen]
+            examples: {}
       responses:
         '200':
           description: ''

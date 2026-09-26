@@ -36,9 +36,9 @@ paths:
                   example: 0
                   type: integer
                 id:
+                  type: integer
                   description: 子账号id
-                  example: '3'
-                  type: string
+                  example: 3
                 is_month:
                   type: integer
                   description: 流量是否限时:0=永久,1=期限<b>此处固定为：1</b>
@@ -47,6 +47,8 @@ paths:
                 - access_token
                 - type
                 - status
+                - id
+                - is_month
             examples: {}
       responses:
         '200':

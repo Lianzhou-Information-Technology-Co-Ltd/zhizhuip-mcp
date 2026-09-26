@@ -18,7 +18,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
           "type": "string",
         },
         "subAccount": {
-          "description": "子账号",
+          "description": "子账号 id",
           "type": "string",
         },
       },
@@ -173,7 +173,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
       "additionalProperties": false,
       "properties": {
         "country_code": {
-          "description": "国家编码，取 country_list 返回的编码；和 country_id 二选一。国家用 ISO 3166-1 二字码，如 US",
+          "description": "国家编码，取 country_list 返回的编码。国家用 ISO 3166-1 二字码，如 US",
           "type": "string",
         },
         "country_id": {
@@ -194,7 +194,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
           "type": "string",
         },
         "state_code": {
-          "description": "州或省编码，取 state_list 返回的编码；和 state_id 二选一",
+          "description": "州或省编码，取 state_list 返回的编码",
           "type": "string",
         },
         "state_id": {
@@ -366,7 +366,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
           "type": "integer",
         },
         "pagesize": {
-          "description": "每页显示数量，最大 100",
+          "description": "每页显示数量",
           "type": "integer",
         },
         "product": {
@@ -643,7 +643,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "sub_accounts": {
           "description": "要升级的子账号 id 列表",
           "items": {
-            "description": "子账号",
+            "description": "子账号 id",
             "type": "string",
           },
           "type": "array",
@@ -680,7 +680,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
     "title": "子账号带宽升级",
   },
   {
-    "description": "会从账户余额扣费。购买动态住宅流量，num 为 GB 数；永久套餐流量不过期，期限套餐要用 bill_timelen 指定有效时长。",
+    "description": "会从账户余额扣费。购买动态住宅流量，num 为 GB 数；永久套餐流量不过期，期限套餐要用 bill_timelen 指定有效时长。账号须先完成邮箱或手机验证以及实名验证才能购买。",
     "destructive": true,
     "inputSchema": {
       "additionalProperties": false,
@@ -736,7 +736,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
     "title": "购买动态住宅流量",
   },
   {
-    "description": "会从账户余额扣费。购买静态住宅 IPv6 时长 IP 子账号，num 为 IP 数量；IPv6 购买不支持优惠券。",
+    "description": "会从账户余额扣费。购买静态住宅 IPv6 时长 IP 子账号，num 为 IP 数量；IPv6 购买不支持优惠券。账号须先完成邮箱或手机验证以及实名验证才能购买。",
     "destructive": true,
     "fixed": {
       "native": 1,
@@ -815,7 +815,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
     "title": "购买 IPv6 时长 IP",
   },
   {
-    "description": "会从账户余额扣费并占用本月测试额度。购买静态住宅或数据中心的时长测试 IP，每单按账号设定的测试订单金额扣款；本月额度用完或本次数量超过剩余额度会被拒绝。有效期默认 1 天，只用于业务测试。",
+    "description": "会从账户余额扣费并占用本月测试额度。购买静态住宅或数据中心的时长测试 IP，每单按账号设定的测试订单金额扣款；本月额度用完或本次数量超过剩余额度会被拒绝。有效期默认 1 天，只用于业务测试。账号须先完成邮箱或手机验证以及实名验证才能购买。",
     "destructive": true,
     "inputSchema": {
       "additionalProperties": false,
@@ -904,7 +904,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
     "title": "购买测试 IP",
   },
   {
-    "description": "会从账户余额扣费。购买静态住宅或数据中心的时长 IP 子账号，num 为 IP 数量。后端限制：num 1 到 300，数据中心单笔不超过 50 个且不支持 7 天档；5 秒内相同参数的重复请求会被拒。",
+    "description": "会从账户余额扣费。购买静态住宅或数据中心的时长 IP 子账号，num 为 IP 数量。后端限制：num 1 到 300，数据中心单笔不超过 50 个且不支持 7 天档；5 秒内相同参数的重复请求会被拒。账号须先完成邮箱或手机验证以及实名验证才能购买。",
     "destructive": true,
     "inputSchema": {
       "additionalProperties": false,
@@ -1122,7 +1122,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
               "ids": {
                 "description": "该组要续费的子账号 id 列表",
                 "items": {
-                  "description": "对应产品id集",
+                  "description": "续费的子账号 id",
                   "type": "string",
                 },
                 "type": "array",
@@ -1224,7 +1224,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
               "ids": {
                 "description": "该组要续费的子账号 id 列表",
                 "items": {
-                  "description": "对应产品id集",
+                  "description": "续费的子账号 id",
                   "type": "string",
                 },
                 "type": "array",
@@ -1306,7 +1306,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
       "additionalProperties": false,
       "properties": {
         "country_code": {
-          "description": "国家编码，取 country_list 返回的编码；和 country_id 二选一。国家用 ISO 3166-1 二字码，如 US",
+          "description": "国家编码，取 country_list 返回的编码。国家用 ISO 3166-1 二字码，如 US",
           "type": "string",
         },
         "country_id": {
@@ -1446,7 +1446,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
       "additionalProperties": false,
       "properties": {
         "id": {
-          "description": "子账号 id",
+          "description": "子账号id",
           "type": "string",
         },
         "product": {
@@ -2022,7 +2022,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
     "title": "批量设置子账号流量上限",
   },
   {
-    "description": "批量修改时长类子账号的密码，只改密码不改用户名；密码只能是字母和数字，长度 8 到 30。",
+    "description": "批量修改时长类子账号的密码，只改密码不改用户名；密码只能是字母和数字，长度 8 到 30。前提是子账号已设置过自定义用户名和密码，系统默认的账密不能用它改，要先用 sub_account_set_credentials 设置。",
     "destructive": false,
     "inputSchema": {
       "additionalProperties": false,

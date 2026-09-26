@@ -40,14 +40,15 @@ paths:
                   example: 1,2,3
                   type: string
                 is_month:
+                  type: integer
                   description: 流量是否限时:0=永久,1=期限<b>此处固定为：1</b>
-                  example: '1'
-                  type: string
+                  example: 1
               required:
                 - access_token
                 - type
                 - status
                 - ids
+                - is_month
             examples: {}
       responses:
         '200':

@@ -173,13 +173,13 @@ describe('mergeGroup', () => {
     expect(p.country_id.type).toBe('integer');
   });
 
-  it('country/country_code 追加 ISO 说明，描述已含 ISO 或"名称"时不追加；pagesize 追加最大 100', () => {
+  it('country/country_code 追加 ISO 说明，描述已含 ISO 或"名称"时不追加；pagesize 照文档，不追加上限', () => {
     const t = mergeGroup([page('a', '/p', T.standard, [
       ['country', true, 'string', '国家编码'], ['country_code', false, 'string', '国家用 ISO 二字码'], ['pagesize', false, 'integer', '每页数量'],
     ])], ov('x'));
     expect(t.inputSchema.properties.country.description).toBe('国家编码。国家用 ISO 3166-1 二字码，如 US');
     expect(t.inputSchema.properties.country_code.description).toBe('国家用 ISO 二字码');
-    expect(t.inputSchema.properties.pagesize.description).toBe('每页数量，最大 100');
+    expect(t.inputSchema.properties.pagesize.description).toBe('每页数量');
     const b = mergeGroup([page('a', '/p', T.standard, [['country', true, 'string', '预约国家名称，无需编码']])], ov('x'));
     expect(b.inputSchema.properties.country.description).toBe('预约国家名称，无需编码');
   });

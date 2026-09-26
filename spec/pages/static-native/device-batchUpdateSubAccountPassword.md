@@ -13,7 +13,7 @@ paths:
     put:
       summary: 批量修改静态住宅（原生）时长IP子账号密码
       deprecated: false
-      description: 自定义静态住宅（原生）时长IP子账号用户名和密码
+      description: 自定义静态住宅（原生）时长IP子账号用户名和密码。前提条件是用户已设置了自定义用户名和密码。系统默认的用户名和密码无法修改
       tags:
         - 用户IP子账号管理/静态住宅（原生）时长子账号
       parameters: []
@@ -86,6 +86,11 @@ paths:
                   - msg
                   - time
                   - data
+              example:
+                code: 1
+                msg: 修改成功！
+                time: '2005-03-27 13:48:34'
+                data: null
           headers: {}
           x-apifox-name: 成功
       security: []

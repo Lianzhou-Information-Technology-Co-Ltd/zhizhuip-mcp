@@ -83,6 +83,7 @@ paths:
                 - type
                 - num
                 - changeInterval
+                - is_month
             examples: {}
       responses:
         '200':
@@ -199,31 +200,6 @@ paths:
                   - msg
                   - time
                   - data
-              example:
-                code: 1
-                msg: 创建成功!
-                time: '1745991945'
-                data:
-                  - password: test
-                    username: test
-                    id: 116
-                    bindUser: test
-                    disabled: 0
-                    bindPassword: test
-                    createTime: '2025-04-30 13:45:46'
-                    port: 5001
-                    agree: SOCKS5
-                    target: proxy.zhizhuip.com
-                    changeInterval: 300
-                    expiresIn: 0
-                    ip: ''
-                    bill: 0
-                    is_diff: 0
-                    country: US
-                    countryName: 美国
-                    state: ''
-                    remark: ''
-                    city: ''
           headers: {}
           x-apifox-name: 成功
       security: []

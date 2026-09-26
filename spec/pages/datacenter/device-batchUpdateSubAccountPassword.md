@@ -13,7 +13,7 @@ paths:
     put:
       summary: 批量修改数据中心时长IP子账号密码
       deprecated: false
-      description: 数据中心IP子账号用户名和密码
+      description: 数据中心IP子账号用户名和密码。前提条件是用户已设置了自定义用户名和密码。系统默认的用户名和密码无法修改
       tags:
         - 用户IP子账号管理/数据中心时长子账号
       parameters: []
