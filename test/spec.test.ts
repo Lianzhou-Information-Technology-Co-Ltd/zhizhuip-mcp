@@ -131,6 +131,10 @@ describe('spec/tools.json', () => {
 
     expect(byName('ip_booking').inputSchema.properties.country.description).toMatch(/名称/);
     expect(byName('ip_booking').inputSchema.properties.country.description).not.toMatch(/ISO/);
+
+    expect(byName('sub_account_limit_flow_batch').inputSchema.properties.page.description).toMatch(/页码/);
+    expect(byName('order_buy_time_ip').inputSchema.properties.num.description).toMatch(/1 到 300(?!0)/);
+    expect(byName('order_buy_time_ip').description).not.toMatch(/不传默认/);
   });
 
   it('子账号 id 类参数一律 string，数组元素与嵌套对象里的也是', () => {

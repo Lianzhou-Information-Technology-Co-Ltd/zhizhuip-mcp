@@ -43,13 +43,6 @@ try {
   process.exit(2);
 }
 
-// 确认码发出后多久才能用；0 只在自动化测试里用，见 confirm.ts 里 ConfirmTokens 的说明
-const confirmQuietMs = Number(process.env.ZHIZHUIP_CONFIRM_QUIET_MS ?? 10_000);
-if (!Number.isInteger(confirmQuietMs) || confirmQuietMs < 0) {
-  console.error('[zhizhuip-mcp] ZHIZHUIP_CONFIRM_QUIET_MS 必须是非负整数毫秒数');
-  process.exit(2);
-}
-
 // 编译后本文件在 dist/src/，包根在上两级；npx 安装与克隆安装的布局一致
 const read = (rel: string): string => readFileSync(new URL(rel, import.meta.url), 'utf8');
 const { version } = JSON.parse(read('../../package.json')) as { version: string };
@@ -71,11 +64,13 @@ const INSTRUCTIONS = `蜘蛛 IP（zhizhuip.com）对外接口 externalapi 的 MC
 function createServer(): McpServer {
   const server = new McpServer({ name: 'zhizhuip-mcp', version }, { instructions: INSTRUCTIONS });
 
-  const tokens = new ConfirmTokens(Date.now, confirmQuietMs);
+  const tokens = new ConfirmTokens(Date.now, cfg.confirmQuietMs);
   // 2026 版协议把客户端能力放在每个请求的信封里，2025 版放在连接初始化时
   const supportsElicitation = (ctx: ServerContext): boolean => {
     const fromEnvelope = (ctx.mcpReq.envelope as Record<string, unknown> | undefined)?.[CLIENT_CAPABILITIES_META_KEY] as ClientCapabilities | undefined;
-    return !!(fromEnvelope ?? server.server.getClientCapabilities())?.elicitation;
+    const cap = (fromEnvelope ?? server.server.getClientCapabilities())?.elicitation as Record<string, unknown> | undefined;
+    // 只声明 URL 型弹窗的客户端弹不出表单，当作不支持，直接走确认码
+    return !!cap && (cap.form !== undefined || Object.keys(cap).length === 0);
   };
 
   for (const t of tools) {

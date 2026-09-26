@@ -901,7 +901,7 @@
   {
     "name": "order_buy_time_ip",
     "title": "购买时长 IP",
-    "description": "会从账户余额扣费。购买静态住宅或数据中心的时长 IP 子账号，num 为 IP 数量。后端限制：num 1 到 3000，数据中心单笔不超过 50 个且不支持 7 天档；agree 不传默认 SOCKS5，country 不传默认 US；5 秒内相同参数的重复请求会被拒。",
+    "description": "会从账户余额扣费。购买静态住宅或数据中心的时长 IP 子账号，num 为 IP 数量。后端限制：num 1 到 300，数据中心单笔不超过 50 个且不支持 7 天档；5 秒内相同参数的重复请求会被拒。",
     "readOnly": false,
     "destructive": true,
     "method": "POST",
@@ -946,7 +946,7 @@
         },
         "num": {
           "type": "integer",
-          "description": "需要购买的子账号数量。范围：1-300之间"
+          "description": "要购买的 IP 数量，后端放行 1 到 300，数据中心单笔不超过 50"
         },
         "country": {
           "type": "string",
@@ -1649,7 +1649,8 @@
           "description": "子账号 id 集合，多个以英文逗号连接"
         },
         "page": {
-          "type": "integer"
+          "type": "integer",
+          "description": "页码，从 1 起"
         },
         "pagesize": {
           "type": "integer",

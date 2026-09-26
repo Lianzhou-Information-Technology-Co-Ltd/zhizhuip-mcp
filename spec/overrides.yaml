@@ -111,8 +111,9 @@ tools:
     title: 批量子账号流量上限配置
     description: 分页查询多个动态住宅子账号的流量上限设置。
     readOnly: true
-    params: # 文档缺陷兜底：accounts 写成 integer，实为多个 id
+    params: # 文档缺陷兜底：accounts 写成 integer，实为多个 id；page 没有描述
       accounts: { description: 子账号 id 集合，多个以英文逗号连接 }
+      page: { description: 页码，从 1 起 }
   /externalapi/tool/getSubAccountWhiteList:
     name: sub_account_whitelist
     title: 子账号白名单
@@ -240,10 +241,11 @@ tools:
           conpon_id: { description: 优惠券 id，用 coupon_list 查 }
       - name: order_buy_time_ip
         title: 购买时长 IP
-        description: 会从账户余额扣费。购买静态住宅或数据中心的时长 IP 子账号，num 为 IP 数量。后端限制：num 1 到 3000，数据中心单笔不超过 50 个且不支持 7 天档；agree 不传默认 SOCKS5，country 不传默认 US；5 秒内相同参数的重复请求会被拒。
+        description: 会从账户余额扣费。购买静态住宅或数据中心的时长 IP 子账号，num 为 IP 数量。后端限制：num 1 到 300，数据中心单笔不超过 50 个且不支持 7 天档；5 秒内相同参数的重复请求会被拒。
         destructive: true
         products: [static-standard, static-native, static-isp-native, datacenter]
         params:
+          num: { description: 要购买的 IP 数量，后端放行 1 到 300，数据中心单笔不超过 50 } # 各产品页描述不一，统一写清上限
           timelen: { enum: [0, 1, 2, 3, 4], description: 购买时长：0=7天，1=30天，2=90天，3=180天，4=360天 }
           agree: { enum: [SOCKS5, HTTP, HTTPS], description: 协议 }
           country: { description: 国家编码，用 country_list 查该产品可买的国家 } # 各产品页各写一套说明，合并后只留通用的

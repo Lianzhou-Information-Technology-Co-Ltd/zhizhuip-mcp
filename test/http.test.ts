@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { callApi, cfgFromEnv, expandArgs } from '../src/http.js';
 import type { ToolDef } from '../src/types.js';
 
-const cfg = { baseUrl: 'https://example.test', token: 'tk', timeoutMs: 1000 };
+const cfg = { baseUrl: 'https://example.test', token: 'sk-secret-xyz', timeoutMs: 1000, confirmQuietMs: 0 };
 
 const tool = (over: Partial<ToolDef> = {}): ToolDef => ({
   name: 't', title: 't', description: '', readOnly: true, destructive: false,
@@ -25,7 +25,15 @@ const textOf = (r: { content: unknown[] }) => (r.content[0] as { text: string })
 describe('cfgFromEnv', () => {
   it('去掉 token 首尾空白和 baseUrl 末尾斜杠，超时默认 30000', () => {
     expect(cfgFromEnv({ ZHIZHUIP_TOKEN: ' sk-abc \n', ZHIZHUIP_BASE_URL: 'https://x.test/' }))
-      .toEqual({ baseUrl: 'https://x.test', token: 'sk-abc', timeoutMs: 30000 });
+      .toEqual({ baseUrl: 'https://x.test', token: 'sk-abc', timeoutMs: 30000, confirmQuietMs: 10000 });
+  });
+  it('超时与静默期设成空串时视为未设置，用默认值', () => {
+    expect(cfgFromEnv({ ZHIZHUIP_TOKEN: 'sk-abc', ZHIZHUIP_TIMEOUT_MS: '', ZHIZHUIP_CONFIRM_QUIET_MS: ' ' })).toMatchObject({ timeoutMs: 30000, confirmQuietMs: 10000 });
+  });
+  it('静默期可以设 0，负数或非数字报错', () => {
+    expect(cfgFromEnv({ ZHIZHUIP_TOKEN: 'sk-abc', ZHIZHUIP_CONFIRM_QUIET_MS: '0' }).confirmQuietMs).toBe(0);
+    expect(() => cfgFromEnv({ ZHIZHUIP_TOKEN: 'sk-abc', ZHIZHUIP_CONFIRM_QUIET_MS: '-1' })).toThrow(/ZHIZHUIP_CONFIRM_QUIET_MS/);
+    expect(() => cfgFromEnv({ ZHIZHUIP_TOKEN: 'sk-abc', ZHIZHUIP_CONFIRM_QUIET_MS: 'abc' })).toThrow(/ZHIZHUIP_CONFIRM_QUIET_MS/);
   });
   it('不传 baseUrl 用正式环境域名', () => {
     expect(cfgFromEnv({ ZHIZHUIP_TOKEN: 'sk-abc' }).baseUrl).toBe('https://www.zhizhuip.cc');
@@ -57,6 +65,9 @@ describe('expandArgs', () => {
   it('没有 products 也没有 fixed 时只加 is_mcp_send', () => {
     expect(expandArgs(tool(), { page: 3 })).toEqual({ page: 3, is_mcp_send: 1 });
   });
+  it('product 是原型链上的名字（constructor）也当不在表里', () => {
+    expect(expandArgs(tool({ products: PRODUCTS }), { product: 'constructor' })).toBeUndefined();
+  });
 });
 
 describe('callApi', () => {
@@ -65,7 +76,7 @@ describe('callApi', () => {
     const r = await callApi(tool({ products: PRODUCTS }), { product: 'datacenter', page: 1 }, cfg,
       stub(200, JSON.stringify({ code: 1, msg: 'ok', time: '1', data: { total: 9 } }), seen));
     expect(seen.url).toBe('https://example.test/externalapi/user/getGetUserInfo?page=1&type=2&status=1&is_mcp_send=1');
-    expect((seen.init?.headers as Record<string, string>).token).toBe('tk');
+    expect((seen.init?.headers as Record<string, string>).token).toBe('sk-secret-xyz');
     expect((seen.init?.headers as Record<string, string>)['user-agent']).toBe('zhizhuip mcp');
     expect(r.isError).toBeUndefined();
     expect(JSON.parse(textOf(r))).toEqual({ code: 1, msg: 'ok', data: { total: 9 } });
@@ -117,8 +128,15 @@ describe('callApi', () => {
       expect(r.isError).toBe(true);
       expect(textOf(r)).toMatch(/API Key 无效/);
       expect(textOf(r)).toContain('ZHIZHUIP_TOKEN');
-      expect(textOf(r)).not.toContain('tk');
+      expect(textOf(r)).not.toContain('sk-secret-xyz');
     }
+  });
+
+  it('HTTP 401 但正文不是 JSON（前置网关拦截）时同样提示 API Key 无效', async () => {
+    const r = await callApi(tool(), {}, cfg, stub(401, '<html>Unauthorized</html>'));
+    expect(r.isError).toBe(true);
+    expect(textOf(r)).toMatch(/API Key 无效/);
+    expect(textOf(r)).not.toContain('sk-secret-xyz');
   });
 
   it('限流提示附带 300 次与带宽 60 次的说明', async () => {

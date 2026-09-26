@@ -50,6 +50,8 @@ export const PRODUCT_PARAMS = ['type', 'status', 'native', 'version', 'is_month'
 const PLAIN_DIRS: Record<string, string> = { 工具管理: 'tool', 用户管理: 'user' };
 /** 子账号 id 类参数：后端经表单收到的本来就是字符串，统一后模型不会因 77 与 "77" 之差被校验拒绝 */
 const ID_KEYS = new Set(['id', 'ids', 'subAccount', 'subAccounts', 'account', 'accounts', 'sub_accounts']);
+/** 参数名的这几段会写到 Object.prototype 上，把整次生成静默搞坏 */
+const UNSAFE_SEGMENTS = new Set(['__proto__', 'constructor', 'prototype']);
 
 const normTag = (tag: string): string => tag.replace(/\s+/g, '');
 const productByTag = new Map(PRODUCT_KEYS.map(k => [normTag(PRODUCTS[k].tag), k]));
@@ -85,7 +87,9 @@ export function parsePage(id: string, md: string): Page {
   const entries = Object.entries(doc?.paths ?? {});
   if (entries.length !== 1) throw new Error(`${id}: 期望恰好一个 path，实际 ${entries.length}`);
   const [path, ops] = entries[0] as [string, Any];
-  const op = Object.values(ops)[0] as Any;
+  const verbs = Object.keys(ops ?? {});
+  if (verbs.length !== 1) throw new Error(`${id}: 期望恰好一个动词，实际 ${verbs.length}`);
+  const op = ops[verbs[0]] as Any;
 
   const params: RawParam[] = [];
   const add = (name: string, required: boolean, s: Any): void => {
@@ -238,6 +242,8 @@ export function mergeGroup(pages: Page[], ov: ToolOverride): ToolDef {
       if (ov.drop?.includes(raw.name)) continue;
       if (hasProduct && PRODUCT_PARAMS.includes(raw.name)) continue;
       const [base, ...segs] = tokens(raw.name);
+      const unsafe = [base, ...segs].find(s => UNSAFE_SEGMENTS.has(s));
+      if (unsafe) throw new Error(`${page.id}: 参数名 ${raw.name} 含不允许的段 ${unsafe}`);
       let leaf: JsonSchema = { ...raw.schema };
       if (leaf.type === 'array') {
         leaf = leaf.items ?? { type: 'string' };

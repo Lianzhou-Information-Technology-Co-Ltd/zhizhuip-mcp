@@ -65,6 +65,10 @@ describe('parsePage', () => {
     expect(() => parsePage('x', '# 空')).toThrow(/没有 yaml 块/);
     expect(() => parsePage('x', '```yaml\npaths:\n  /a:\n    get: {}\n  /b:\n    get: {}\n```')).toThrow(/恰好一个 path/);
   });
+
+  it('一个 path 下有两个动词时报错，不能悄悄只取第一个', () => {
+    expect(() => parsePage('x', '```yaml\npaths:\n  /a:\n    get:\n      summary: s\n    post:\n      summary: s\n```')).toThrow(/恰好一个动词/);
+  });
 });
 
 describe('placePages', () => {
@@ -262,5 +266,13 @@ describe('PRODUCTS', () => {
     expect(Object.keys(PRODUCTS)).toEqual(['dynamic-no-expiry', 'dynamic-monthly', 'static-standard', 'static-native', 'static-isp-native', 'static-ipv6', 'datacenter']);
     expect(PRODUCTS['static-ipv6'].params).toEqual({ type: 1, status: 1, native: 1, version: 6 });
     expect(PRODUCTS['dynamic-monthly'].params).toEqual({ type: 0, status: 0, is_month: 1 });
+  });
+});
+
+// 放在最后：没修好的实现会把 Object.prototype 写脏，影响同一进程里后面的用例
+describe('参数名安全', () => {
+  it('参数名含 __proto__ 之类的段时报错，不写进原型', () => {
+    expect(() => mergeGroup([page('a', '/p', T.standard, [['__proto__[x]', false]])], ov('x'))).toThrow(/不允许/);
+    expect(({} as Record<string, unknown>).type).toBeUndefined();
   });
 });

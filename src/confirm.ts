@@ -50,8 +50,9 @@ export class ConfirmTokens {
   constructor(private now: () => number = Date.now, private quietMs: number = TOKEN_QUIET_MS) {}
 
   issue(tool: string, args: Record<string, unknown>): string {
-    const token = randomBytes(4).toString('hex');
     const t = this.now();
+    for (const [k, p] of this.pending) if (p.expires < t) this.pending.delete(k); // 过期的顺手清掉，长会话里不会越积越多
+    const token = randomBytes(4).toString('hex');
     this.pending.set(token, { fp: fingerprint(tool, args), expires: t + TOKEN_TTL_MS, notBefore: t + this.quietMs });
     return token;
   }

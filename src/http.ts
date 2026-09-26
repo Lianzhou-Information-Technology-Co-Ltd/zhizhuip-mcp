@@ -6,9 +6,17 @@ export interface Cfg {
   baseUrl: string;
   token: string;
   timeoutMs: number;
+  /** 确认码发出后多久才能用；0 只给自动化测试用 */
+  confirmQuietMs: number;
 }
 
 export const DEFAULT_BASE_URL = 'https://www.zhizhuip.cc';
+
+/** 环境变量设成空串和没设一样，都用默认值 */
+const numberEnv = (raw: string | undefined, fallback: number): number => {
+  const s = (raw ?? '').trim();
+  return s ? Number(s) : fallback;
+};
 
 export function cfgFromEnv(env: NodeJS.ProcessEnv = process.env): Cfg {
   const token = (env.ZHIZHUIP_TOKEN ?? '').trim();
@@ -19,9 +27,11 @@ export function cfgFromEnv(env: NodeJS.ProcessEnv = process.env): Cfg {
     );
   }
   const baseUrl = (env.ZHIZHUIP_BASE_URL ?? DEFAULT_BASE_URL).trim().replace(/\/+$/, '');
-  const timeoutMs = Number(env.ZHIZHUIP_TIMEOUT_MS ?? 30_000);
+  const timeoutMs = numberEnv(env.ZHIZHUIP_TIMEOUT_MS, 30_000);
   if (!Number.isInteger(timeoutMs) || timeoutMs <= 0) throw new Error('ZHIZHUIP_TIMEOUT_MS 必须是正整数（毫秒）');
-  return { baseUrl, token, timeoutMs };
+  const confirmQuietMs = numberEnv(env.ZHIZHUIP_CONFIRM_QUIET_MS, 10_000);
+  if (!Number.isInteger(confirmQuietMs) || confirmQuietMs < 0) throw new Error('ZHIZHUIP_CONFIRM_QUIET_MS 必须是非负整数（毫秒）');
+  return { baseUrl, token, timeoutMs, confirmQuietMs };
 }
 
 export const text = (t: string, isError = false): CallToolResult => ({
@@ -36,7 +46,8 @@ export const text = (t: string, isError = false): CallToolResult => ({
  */
 export function expandArgs(tool: ToolDef, args: Record<string, unknown>): Record<string, unknown> | undefined {
   const { product, ...rest } = args;
-  const combo = tool.products ? tool.products[String(product)] : undefined;
+  // hasOwn：product 写成 constructor 之类原型链上的名字时不能当成命中
+  const combo = tool.products && Object.hasOwn(tool.products, String(product)) ? tool.products[String(product)] : undefined;
   if (tool.products && !combo) return undefined;
   return { ...rest, ...combo, ...tool.fixed, is_mcp_send: 1 };
 }
@@ -90,13 +101,14 @@ export async function callApi(
 
   const body = parseBody(raw);
   const code = body ? Number(body.code) : NaN;
-  if (!body || !Number.isFinite(code)) return text(`HTTP ${status}，响应格式异常：${raw.slice(0, 200)}`, true);
-
-  const msg = String(body.msg ?? '');
-  if (code === 1) return text(JSON.stringify({ code, msg, data: tool.pick ? pickField(body.data, tool.pick) : body.data ?? null }));
-  if (code === 401 || code === 403 || status === 401) {
+  const msg = body ? String(body.msg ?? '') : raw.slice(0, 200);
+  // 401 先于格式检查：前置网关拦截时正文是 HTML，也要给出 API Key 的提示
+  if (status === 401 || code === 401 || code === 403) {
     return text(`API Key 无效（${msg}）。请到蜘蛛 IP 网站的 API Keys 页面核对这个 Key 是否还在、复制是否完整，必要时重新生成，更新 ZHIZHUIP_TOKEN 后重启本 MCP。`, true);
   }
+  if (!body || !Number.isFinite(code)) return text(`HTTP ${status}，响应格式异常：${raw.slice(0, 200)}`, true);
+
+  if (code === 1) return text(JSON.stringify({ code, msg, data: tool.pick ? pickField(body.data, tool.pick) : body.data ?? null }));
   if (msg.includes('访问频繁')) return text(`${msg} 后端限流为每个接口每 IP 30 秒内 300 次（带宽类接口 60 次），请稍后重试。`, true);
   return text(body.data == null ? msg : `${msg}\n${JSON.stringify(body.data)}`, true);
 }

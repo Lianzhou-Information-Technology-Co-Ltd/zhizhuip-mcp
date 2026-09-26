@@ -28,11 +28,11 @@ beforeAll(async () => {
 });
 afterAll(() => backend.close());
 
-type ConnectOptions = { elicit?: 'accept' | 'decline'; messages?: string[]; modern?: boolean; quietMs?: number };
+type ConnectOptions = { elicit?: 'accept' | 'decline'; messages?: string[]; modern?: boolean; quietMs?: number; capabilities?: Record<string, unknown> };
 
 async function connect(args: string[], opts: ConnectOptions = {}): Promise<Client> {
   const client = new Client({ name: 'test', version: '0.0.0' }, {
-    capabilities: opts.elicit ? { elicitation: {} } : {},
+    capabilities: opts.capabilities ?? (opts.elicit ? { elicitation: {} } : {}),
     versionNegotiation: opts.modern ? { mode: 'auto' } : undefined,
   });
   if (opts.elicit) {
@@ -193,6 +193,17 @@ describe('写操作确认', () => {
     const r = await c.callTool(WRITE);
     expect(r.isError).toBeFalsy();
     expect(textOf(r)).toContain('弹窗没有得到确认');
+    expect(textOf(r)).toMatch(/confirm_token=[0-9a-f]+/);
+    expect(hits).toHaveLength(0);
+    await c.close();
+  }, 20_000);
+
+  it('客户端只支持 URL 型弹窗：当作不支持，直接给预览与确认码', async () => {
+    const c = await connect([], { capabilities: { elicitation: { url: {} } } });
+    hits.length = 0;
+    const r = await c.callTool(WRITE);
+    expect(r.isError).toBeFalsy();
+    expect(textOf(r)).toContain('待确认');
     expect(textOf(r)).toMatch(/confirm_token=[0-9a-f]+/);
     expect(hits).toHaveLength(0);
     await c.close();

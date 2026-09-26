@@ -65,6 +65,15 @@ describe('ConfirmTokens', () => {
     expect(t.consume(token, 'x', { a: 1 })).toBe('unknown');
   });
 
+  it('签发新确认码时顺手清掉已过期的旧码，旧码变成 unknown 而不是一直留着', () => {
+    let now = 1_000;
+    const t = new ConfirmTokens(() => now, 0);
+    const old = t.issue('x', { a: 1 });
+    now += TOKEN_TTL_MS + 1;
+    t.issue('x', { b: 2 });
+    expect(t.consume(old, 'x', { a: 1 })).toBe('unknown');
+  });
+
   it('参数变了或工具变了报 mismatch 并作废；过期报 expired', () => {
     let now = 1_000;
     const t = new ConfirmTokens(() => now, 0);
