@@ -13,7 +13,7 @@ paths:
     get:
       summary: 获取静态住宅（非原生）时长子账号列表
       deprecated: false
-      description: 获取静态住宅时长子账号列表
+      description: 获取静态住宅（非原生）时长子账号列表
       tags:
         - 用户IP子账号管理/静态住宅（非原生）时长子账号
       parameters:
@@ -283,6 +283,42 @@ paths:
                   - msg
                   - time
                   - data
+              example:
+                code: 1
+                msg: 获取成功
+                time: '1697514426'
+                data:
+                  total: 106
+                  rows:
+                    - id: '110'
+                      is_diff: 0
+                      agree: SOCKS5
+                      country: US
+                      ip: 127.0.0.1
+                      target: demo.demo.com
+                      port: 5001
+                      username: demo-110
+                      password: demo
+                      is_bind: 否
+                      remark: ''
+                      bindUser: demo-110
+                      bindPassword: demo
+                      countdown: 30.0天
+                      expiresIn: 1723514861
+                      createtime: '2023-10-17 11:35:09'
+                      state: ''
+                      city: ''
+                      bill: 0
+                      countryName: 美国
+                      status: 1
+                      use_bill: '0.00'
+                      is_renew: '0'
+                      renew_with_bandwidth: '0'
+                      bandwidth_num: 5
+                  baseflow: 0
+                  countryList:
+                    - country: US
+                      countryName: 美国
           headers: {}
           x-apifox-name: 成功
       security: []

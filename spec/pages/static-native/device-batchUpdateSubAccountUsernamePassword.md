@@ -13,7 +13,7 @@ paths:
     put:
       summary: 自定义静态住宅（原生）时长IP子账号用户名和密码
       deprecated: false
-      description: 自定义静态住宅时长IP子账号用户名和密码
+      description: 自定义静态住宅（原生）时长IP子账号用户名和密码
       tags:
         - 用户IP子账号管理/静态住宅（原生）时长子账号
       parameters: []
@@ -66,6 +66,7 @@ paths:
                 - content[0][id]
                 - content[0][customUsername]
                 - content[0][customPassword]
+            examples: {}
       responses:
         '200':
           description: ''
@@ -94,11 +95,6 @@ paths:
                   - msg
                   - time
                   - data
-              example:
-                code: 1
-                msg: 修改成功！
-                time: '2005-03-27 13:48:34'
-                data: null
           headers: {}
           x-apifox-name: 成功
       security: []

@@ -13,7 +13,7 @@ paths:
     post:
       summary: 购买静态住宅（原生）时长IP
       deprecated: false
-      description: 购买静态住宅时长IP
+      description: 购买静态住宅（原生）时长IP
       tags:
         - 用户IP子账号管理/静态住宅（原生）时长子账号
       parameters: []

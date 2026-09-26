@@ -13,7 +13,7 @@ paths:
     put:
       summary: 批量开关静态住宅（运营商原生）ip端口连接状态
       deprecated: false
-      description: 自定义静态住宅时长IP子账号用户名和密码
+      description: 自定义静态住宅（运营商原生）时长IP子账号用户名和密码
       tags:
         - 用户IP子账号管理/静态住宅（运营商原生）时长子账号
       parameters: []

@@ -13,7 +13,7 @@ paths:
     get:
       summary: 获取静态住宅（原生）对应城市列表
       deprecated: false
-      description: 获取静态住宅时长对应城市列表
+      description: 获取静态住宅（原生）时长对应城市列表
       tags:
         - 用户IP子账号管理/静态住宅（原生）时长子账号
       parameters:
@@ -89,6 +89,32 @@ paths:
                   - msg
                   - time
                   - data
+              example:
+                code: 1
+                msg: 获取成功!
+                time: '1697681198'
+                data:
+                  citys:
+                    - id: 11
+                      name: Los Angeles
+                      code: Los Angeles
+                      type_text: ''
+                      status_text: ''
+                    - id: 22
+                      name: New York City
+                      code: New York City
+                      type_text: ''
+                      status_text: ''
+                    - id: 33
+                      name: Chicago
+                      code: Chicago
+                      type_text: ''
+                      status_text: ''
+                    - id: 44
+                      name: Houston
+                      code: Houston
+                      type_text: ''
+                      status_text: ''
           headers: {}
           x-apifox-name: 成功
       security: []
