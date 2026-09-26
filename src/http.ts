@@ -49,7 +49,7 @@ export function expandArgs(tool: ToolDef, args: Record<string, unknown>): Record
   // hasOwn：product 写成 constructor 之类原型链上的名字时不能当成命中
   const combo = tool.products && Object.hasOwn(tool.products, String(product)) ? tool.products[String(product)] : undefined;
   if (tool.products && !combo) return undefined;
-  return { ...rest, ...combo, ...tool.fixed, is_mcp_send: 1 };
+  return { ...tool.defaults, ...rest, ...combo, ...tool.fixed, is_mcp_send: 1 };
 }
 
 type Body = { code?: unknown; msg?: unknown; data?: unknown };

@@ -2,7 +2,7 @@
 
 蜘蛛 IP（zhizhuip.com）对外 API 的 MCP 服务器。让 Claude Code、Claude Desktop 等 MCP 客户端可以查询子账号、流量、价格、库存，并在你确认后下单、续费、改配置。
 
-默认暴露全部 41 个工具，含下单扣费、续费、删除子账号；加 `--readonly` 只暴露 21 个只读工具，装了不会产生任何费用。20 个写操作执行前都会先向你确认（见下文"写操作确认"）：支持弹窗的客户端由你点确认，其它客户端由助手转述后再向你确认；不需要写操作的人直接配 `--readonly`。
+默认暴露全部 40 个工具，含下单扣费、续费、删除子账号；加 `--readonly` 只暴露 21 个只读工具，装了不会产生任何费用。19 个写操作执行前都会先向你确认（见下文"写操作确认"）：支持弹窗的客户端由你点确认，其它客户端由助手转述后再向你确认；不需要写操作的人直接配 `--readonly`。
 
 业务逻辑、参数校验、鉴权、扣费全部在后端完成，本项目只是一个 HTTP 客户端。
 
@@ -94,7 +94,7 @@ setup 的输出按客户端分段：Claude Code 与 Codex CLI 各一条可直接
 
 ## 写操作确认
 
-新增、修改、下单、续费、升级、退单、预约、删除这 20 个工具执行前都会先向你确认：
+新增、修改、下单、续费、升级、退单、预约、删除这 19 个工具执行前都会先向你确认：
 
 - 客户端支持 MCP 的弹窗确认（elicitation）时，会弹出操作预览（工具、参数、产品名），你点确认后才请求后端。弹窗没得到确认（你点了拒绝或关掉，或者客户端声明支持却没显示弹窗）都会退到下面的确认码方式，由助手在对话里再向你确认一次，你不同意就不执行。
 - 客户端不支持时，第一次调用只返回预览和一个 5 分钟有效、只能用一次的确认码，AI 要把预览告诉你，你同意后它再带确认码用同样参数调一次。
@@ -141,7 +141,6 @@ npx @modelcontextprotocol/inspector -e ZHIZHUIP_TOKEN=你的token -- node <安�
 | sub_account_set_credentials / sub_account_set_password_batch | 自定义账密 / 批量改密码 |
 | sub_account_toggle_port | 批量开关端口连接 |
 | sub_account_set_limit_flow / sub_account_set_limit_flow_batch | 设置流量上限 |
-| sub_account_set_whitelist | 设置子账号 IP 白名单 |
 | sub_account_delete / sub_account_delete_batch | 删除子账号，不可恢复 |
 | order_buy_dynamic | 购买动态住宅流量，扣费 |
 | order_buy_time_ip / order_buy_ipv6 | 购买时长 IP、IPv6 时长 IP，扣费 |

@@ -55,10 +55,10 @@ const LIST = { name: 'sub_account_list', arguments: { product: 'static-native', 
 const WRITE = { name: 'sub_account_update_batch', arguments: { product: 'dynamic-no-expiry', ids: '12,13', remark: '测试' } };
 
 describe('stdio server', () => {
-  it('不带参数暴露全部 41 个工具，扣费与删除工具带 destructiveHint', async () => {
+  it('不带参数暴露全部 40 个工具，扣费与删除工具带 destructiveHint', async () => {
     const c = await connect([]);
     const { tools } = await c.listTools();
-    expect(tools).toHaveLength(41);
+    expect(tools).toHaveLength(40);
     expect(tools.find(t => t.name === 'order_buy_time_ip')?.annotations).toMatchObject({ readOnlyHint: false, destructiveHint: true, idempotentHint: false });
     expect(tools.find(t => t.name === 'ip_booking')?.annotations).toMatchObject({ readOnlyHint: false, destructiveHint: false });
     expect(tools.find(t => t.name === 'user_info')?.annotations).toMatchObject({ readOnlyHint: true, idempotentHint: true });
@@ -76,6 +76,15 @@ describe('stdio server', () => {
     expect(resources.map(r => r.uri)).toEqual(['zhizhuip://docs/dynamic-proxy-session']);
     const read = await c.readResource({ uri: 'zhizhuip://docs/dynamic-proxy-session' });
     expect((read.contents[0] as { text: string }).text).toContain('proxy.zhizhuip.com');
+    await c.close();
+  }, 20_000);
+
+  it('工具定义里的 defaults 由 MCP 补上：不传 page、pagesize 时按 1 与 100 发', async () => {
+    const c = await connect(['--readonly']);
+    hits.length = 0;
+    const r = await c.callTool({ name: 'sub_account_limit_flow_batch', arguments: { product: 'dynamic-no-expiry', accounts: '1,2' } });
+    expect(r.isError).toBeFalsy();
+    expect(decodeURIComponent(hits[0].url)).toBe('/externalapi/tool/accountLimitFlowBatchDetail?page=1&pagesize=100&accounts=1,2&type=0&status=0&is_month=0&is_mcp_send=1');
     await c.close();
   }, 20_000);
 
@@ -173,7 +182,7 @@ describe('写操作确认', () => {
     expect(messages[0]).toContain('批量修改子账号（sub_account_update_batch）');
     expect(messages[0]).toContain('- product：dynamic-no-expiry（动态住宅流量（永久））');
     expect(hits).toHaveLength(1);
-    expect(decodeURIComponent(hits[0].body)).toBe('ids=12,13&remark=测试&type=0&status=0&is_mcp_send=1');
+    expect(decodeURIComponent(hits[0].body)).toBe('ids=12,13&remark=测试&type=0&status=0&is_month=0&is_mcp_send=1');
     await c.close();
   }, 20_000);
 
@@ -223,7 +232,7 @@ describe('写操作确认', () => {
     const done = await c.callTool({ ...WRITE, arguments: { ...WRITE.arguments, confirm_token: token } });
     expect(done.isError).toBeFalsy();
     expect(hits).toHaveLength(1);
-    expect(decodeURIComponent(hits[0].body)).toBe('ids=12,13&remark=测试&type=0&status=0&is_mcp_send=1');
+    expect(decodeURIComponent(hits[0].body)).toBe('ids=12,13&remark=测试&type=0&status=0&is_month=0&is_mcp_send=1');
 
     const reused = await c.callTool({ ...WRITE, arguments: { ...WRITE.arguments, confirm_token: token } });
     expect(reused.isError).toBe(true);

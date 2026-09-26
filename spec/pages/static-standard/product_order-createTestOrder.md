@@ -36,7 +36,7 @@ paths:
                   example: 1
                   type: integer
                 num:
-                  description: 需要购买的子账号数量。范围：1-300之间
+                  description: 需要购买的子账号数量。范围：1-100之间
                   example: 1
                   type: integer
                 country:
@@ -207,34 +207,6 @@ paths:
                   - msg
                   - time
                   - data
-              example:
-                code: 1
-                msg: 购买成功
-                time: '1697513125'
-                data:
-                  subAccounts:
-                    - id: '22'
-                      is_diff: 0
-                      agree: SOCKS5
-                      country: US
-                      ip: 127.0.0.1
-                      target: demo.demo.com
-                      port: 5001
-                      username: demo-22
-                      password: demo
-                      is_bind: 否
-                      remark: ''
-                      native: '1'
-                      expiresIn: 1729148031
-                      bindUser: demo-22
-                      bindPassword: demo
-                      countdown: 30.0天
-                      createtime: '1970-01-01 08:00:00'
-                      state: ''
-                      city: ''
-                      bill: 0
-                      countryName: 美国
-                      status: 1
           headers: {}
           x-apifox-name: 成功
       security: []

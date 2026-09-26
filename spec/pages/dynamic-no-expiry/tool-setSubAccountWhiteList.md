@@ -40,7 +40,7 @@ paths:
                   example: 0
                 is_month:
                   type: integer
-                  description: 流量是否限时:0=永久,1=期限<b>此处固定为：1</b>
+                  description: 流量是否限时:0=永久,1=期限<b>此处固定为：0</b>
                   example: 0
                 id:
                   type: integer
@@ -50,6 +50,10 @@ paths:
                   description: 白名单列表,多个以英文逗号分隔
                   example: 129.34.52.111,149.40.66.89
                   type: string
+              required:
+                - type
+                - status
+                - is_month
             examples: {}
       responses:
         '200':

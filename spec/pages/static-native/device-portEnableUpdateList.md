@@ -53,6 +53,7 @@ paths:
                 - status
                 - native
                 - ids
+                - use_ip_port
             examples: {}
       responses:
         '200':
@@ -82,6 +83,11 @@ paths:
                   - msg
                   - time
                   - data
+              example:
+                code: 1
+                msg: 修改成功！
+                time: '2005-03-27 13:48:34'
+                data: null
           headers: {}
           x-apifox-name: 成功
       security: []

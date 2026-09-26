@@ -65,6 +65,11 @@ describe('expandArgs', () => {
   it('没有 products 也没有 fixed 时只加 is_mcp_send', () => {
     expect(expandArgs(tool(), { page: 3 })).toEqual({ page: 3, is_mcp_send: 1 });
   });
+  it('defaults 在没传的参数上补默认值，传了以传的为准', () => {
+    const t = tool({ defaults: { page: 1, pagesize: 100 } });
+    expect(expandArgs(t, { accounts: '1,2' })).toEqual({ page: 1, pagesize: 100, accounts: '1,2', is_mcp_send: 1 });
+    expect(expandArgs(t, { page: 3, accounts: '1,2' })).toEqual({ page: 3, pagesize: 100, accounts: '1,2', is_mcp_send: 1 });
+  });
   it('product 是原型链上的名字（constructor）也当不在表里', () => {
     expect(expandArgs(tool({ products: PRODUCTS }), { product: 'constructor' })).toBeUndefined();
   });

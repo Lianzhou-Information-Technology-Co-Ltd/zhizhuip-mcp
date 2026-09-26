@@ -222,6 +222,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -289,6 +290,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -393,6 +395,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -466,7 +469,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
       "additionalProperties": false,
       "properties": {
         "city_code": {
-          "description": "城市名称，取 city_list 返回的名称",
+          "description": "城市名称，取 city_list 返回的名称（名称与编码相同）",
           "type": "string",
         },
         "country_code": {
@@ -557,6 +560,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -594,6 +598,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -681,7 +686,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
       "additionalProperties": false,
       "properties": {
         "bill_timelen": {
-          "description": "流量有效时长，只有 dynamic-monthly 需要：1=30天，2=90天，3=180天",
+          "description": "流量有效时长，product 为 dynamic-monthly 时必填（后端校验）：1=30天，2=90天，3=180天；dynamic-no-expiry 不要传",
           "enum": [
             1,
             2,
@@ -722,6 +727,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -844,7 +850,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
           "type": "string",
         },
         "num": {
-          "description": "需要购买的子账号数量。范围：1-300之间",
+          "description": "需要购买的子账号数量。范围：1-100之间",
           "type": "integer",
         },
         "product": {
@@ -959,7 +965,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
           "type": "string",
         },
         "specifyIps": {
-          "description": "指定从哪些 IP 段购买，每项写一个 IP 段前缀和该段要买的数量；IP 段用 ip_range_status 查",
+          "description": "指定从哪些 IP 段购买，每项写一个 IP 段前缀和该段要买的数量，各段 count 之和必须等于 num；IP 段用 ip_range_status 查",
           "items": {
             "additionalProperties": false,
             "properties": {
@@ -1045,7 +1051,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
     "title": "购买时长 IP",
   },
   {
-    "description": "为静态住宅的一个子账号申请退单，提交后由人工审核，不会立即退款。",
+    "description": "为静态住宅的一个子账号申请退单，提交后由人工审核，不会立即退款。后端限制：只能在下单后 1 天内申请；已续费、有进行中的带宽升级订单、消费记录已开票的子账号不能退；同一子账号重复申请会被拒。",
     "destructive": false,
     "inputSchema": {
       "additionalProperties": false,
@@ -1114,7 +1120,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
             "additionalProperties": false,
             "properties": {
               "country": {
-                "description": "这组子账号的国家编码，取 sub_account_list 返回的 country",
+                "description": "这组子账号的国家编码，传 sub_account_list 返回的 country 即可；后端以子账号库里记录的国家为准",
                 "type": "string",
               },
               "ids": {
@@ -1199,7 +1205,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
     "title": "续费时长 IP",
   },
   {
-    "description": "会从账户余额扣费。续费静态住宅 IPv6 时长 IP 子账号，content 按国家分组，每组写子账号 id 列表、国家、续费时长。",
+    "description": "会从账户余额扣费。续费静态住宅 IPv6 时长 IP 子账号，content 按国家分组，每组写子账号 id 列表、国家、续费时长；IPv6 续费不支持优惠券。",
     "destructive": true,
     "fixed": {
       "native": 1,
@@ -1210,10 +1216,6 @@ exports[`spec/tools.json > 完整快照 1`] = `
     "inputSchema": {
       "additionalProperties": false,
       "properties": {
-        "conpon_id": {
-          "description": "优惠券 id，用 coupon_list 查",
-          "type": "integer",
-        },
         "content": {
           "description": "续费内容，按国家分组，每组写 ids、country、timelen",
           "items": {
@@ -1294,6 +1296,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -1340,6 +1343,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -1348,13 +1352,16 @@ exports[`spec/tools.json > 完整快照 1`] = `
     "title": "州/省列表",
   },
   {
+    "defaults": {
+      "agree": "SOCKS5",
+    },
     "description": "为动态住宅产品新增 num 个子账号，消耗主账号已购流量，不额外扣费。返回新建子账号的账号密码。",
     "destructive": false,
     "inputSchema": {
       "additionalProperties": false,
       "properties": {
         "agree": {
-          "description": "协议。产品 dynamic-no-expiry 下必填",
+          "description": "协议，不传默认 SOCKS5",
           "enum": [
             "SOCKS5",
             "HTTP",
@@ -1367,15 +1374,15 @@ exports[`spec/tools.json > 完整快照 1`] = `
           "type": "integer",
         },
         "city": {
-          "description": "城市code",
+          "description": "城市名称，取 city_list 返回的名称（名称与编码是同一个值）",
           "type": "string",
         },
         "country": {
-          "description": "国家编码（ISO 3166-1 二字码），多个以英文逗号分隔，如 US,JP；可选国家用 country_list 查。产品 dynamic-no-expiry 下必填",
+          "description": "国家编码（ISO 3166-1 二字码），多个以英文逗号分隔，如 US,JP；可选国家用 country_list 查",
           "type": "string",
         },
         "num": {
-          "description": "需要生成的子账号数量",
+          "description": "要新增的子账号数量，1 到 500",
           "type": "integer",
         },
         "product": {
@@ -1391,11 +1398,11 @@ exports[`spec/tools.json > 完整快照 1`] = `
           "type": "string",
         },
         "spec": {
-          "description": "指定供应商（资源池）id，取 provider_list 返回的 id",
+          "description": "指定一个供应商（资源池）id，取 provider_list 返回的 id，只能传一个",
           "type": "integer",
         },
         "state": {
-          "description": "州/省份,多个以逗号隔开:'anhui,jiangsu'",
+          "description": "州或省名称，多个以英文逗号分隔，取 state_list 返回的名称（名称与编码是同一个值）",
           "type": "string",
         },
         "url": {
@@ -1415,6 +1422,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "product",
         "num",
         "changeInterval",
+        "country",
       ],
       "type": "object",
     },
@@ -1428,6 +1436,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -1470,6 +1479,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -1512,6 +1522,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -1568,6 +1579,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -1610,6 +1622,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -1618,6 +1631,10 @@ exports[`spec/tools.json > 完整快照 1`] = `
     "title": "子账号流量上限配置",
   },
   {
+    "defaults": {
+      "page": 1,
+      "pagesize": 100,
+    },
     "description": "分页查询多个动态住宅子账号的流量上限设置。",
     "destructive": false,
     "inputSchema": {
@@ -1628,11 +1645,11 @@ exports[`spec/tools.json > 完整快照 1`] = `
           "type": "string",
         },
         "page": {
-          "description": "页码，从 1 起",
+          "description": "页码，从 1 起，不传默认 1",
           "type": "integer",
         },
         "pagesize": {
-          "description": "分页数量，最大值100",
+          "description": "每页数量，最大 100，不传默认 100",
           "type": "integer",
         },
         "product": {
@@ -1660,6 +1677,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -1682,7 +1700,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
           "type": "string",
         },
         "ids": {
-          "description": "子账号 id 集合，多个以英文逗号连接（时长类产品用）",
+          "description": "子账号 id 集合，多个以英文逗号连接",
           "type": "string",
         },
         "page": {
@@ -1711,7 +1729,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
           "type": "string",
         },
         "searchArr": {
-          "description": "搜索值列表，与 search_type 配合（时长类产品用）",
+          "description": "搜索值列表（时长类产品用）：search_type=0 时填自定义账号名，search_type=1 时填出口 IP，search_type=2 时只取第一项作为备注关键字",
           "items": {
             "type": "string",
           },
@@ -1725,10 +1743,6 @@ exports[`spec/tools.json > 完整快照 1`] = `
             2,
           ],
           "type": "integer",
-        },
-        "subAccounts": {
-          "description": "子账号 id 集合，多个以英文逗号连接（动态产品用）",
-          "type": "string",
         },
       },
       "required": [
@@ -1752,6 +1766,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -1847,6 +1862,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -1886,19 +1902,20 @@ exports[`spec/tools.json > 完整快照 1`] = `
           "type": "string",
         },
         "cycle": {
-          "description": "限制周期：0=每天，1=每周，2=每月，3=每季度，4=每年",
+          "description": "限制周期：0=每天，1=每周，2=每月，3=每季度，4=每年，5=永久（按累计用量，不清零）",
           "enum": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
           ],
-          "type": "string",
+          "type": "integer",
         },
         "limit_flow": {
-          "description": "上限流量，单位 GB",
-          "type": "string",
+          "description": "上限流量，单位 GB，0 到 1000000；传 0 表示删除该子账号的流量限制",
+          "type": "integer",
         },
         "product": {
           "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）",
@@ -1912,6 +1929,8 @@ exports[`spec/tools.json > 完整快照 1`] = `
       "required": [
         "product",
         "account",
+        "cycle",
+        "limit_flow",
       ],
       "type": "object",
     },
@@ -1925,6 +1944,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -1948,24 +1968,29 @@ exports[`spec/tools.json > 完整快照 1`] = `
                 "type": "string",
               },
               "limit_flow": {
-                "description": "上限流量，单位 GB",
-                "type": "string",
+                "description": "上限流量，单位 GB，0 到 1000000；传 0 表示删除该子账号的流量限制",
+                "type": "integer",
               },
             },
+            "required": [
+              "account",
+              "limit_flow",
+            ],
             "type": "object",
           },
           "type": "array",
         },
         "cycle": {
-          "description": "限制周期：0=每天，1=每周，2=每月，3=每季度，4=每年",
+          "description": "限制周期：0=每天，1=每周，2=每月，3=每季度，4=每年，5=永久（按累计用量，不清零）",
           "enum": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
           ],
-          "type": "string",
+          "type": "integer",
         },
         "product": {
           "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）",
@@ -1978,6 +2003,8 @@ exports[`spec/tools.json > 完整快照 1`] = `
       },
       "required": [
         "product",
+        "cycle",
+        "accounts",
       ],
       "type": "object",
     },
@@ -1991,6 +2018,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -2071,53 +2099,6 @@ exports[`spec/tools.json > 完整快照 1`] = `
     "title": "批量改子账号密码",
   },
   {
-    "description": "设置动态住宅某个子账号的 IP 白名单，整体覆盖原有列表。",
-    "destructive": false,
-    "inputSchema": {
-      "additionalProperties": false,
-      "properties": {
-        "id": {
-          "description": "子账号 id",
-          "type": "string",
-        },
-        "ip_list": {
-          "description": "白名单 IP 列表，多个以英文逗号分隔",
-          "type": "string",
-        },
-        "product": {
-          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）",
-          "enum": [
-            "dynamic-no-expiry",
-            "dynamic-monthly",
-          ],
-          "type": "string",
-        },
-      },
-      "required": [
-        "product",
-        "id",
-        "ip_list",
-      ],
-      "type": "object",
-    },
-    "method": "POST",
-    "name": "sub_account_set_whitelist",
-    "path": "/externalapi/tool/setSubAccountWhiteList",
-    "products": {
-      "dynamic-monthly": {
-        "is_month": 1,
-        "status": 0,
-        "type": 0,
-      },
-      "dynamic-no-expiry": {
-        "status": 0,
-        "type": 0,
-      },
-    },
-    "readOnly": false,
-    "title": "设置子账号白名单",
-  },
-  {
     "description": "批量开启或关闭静态住宅子账号的 IP 端口连接状态。",
     "destructive": false,
     "inputSchema": {
@@ -2148,6 +2129,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
       "required": [
         "product",
         "ids",
+        "use_ip_port",
       ],
       "type": "object",
     },
@@ -2213,6 +2195,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -2263,6 +2246,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },
@@ -2305,6 +2289,7 @@ exports[`spec/tools.json > 完整快照 1`] = `
         "type": 0,
       },
       "dynamic-no-expiry": {
+        "is_month": 0,
         "status": 0,
         "type": 0,
       },

@@ -48,11 +48,11 @@ paths:
             type: integer
         - name: cycle
           in: query
-          description: 限制周期:0=每天,1=每周,2=每月,3=每季度,4=每年
+          description: 限制周期:0=每天,1=每周,2=每月,3=每季度,4=每年,5=永久
           required: false
-          example: '0'
+          example: 0
           schema:
-            type: string
+            type: integer
         - name: accounts[0][account]
           in: query
           description: >-
@@ -64,11 +64,11 @@ paths:
             type: string
         - name: accounts[0][limit_flow]
           in: query
-          description: ''
+          description: 限制流量:G, 传 0 表示删除该子账号的流量限制
           required: false
-          example: '3'
+          example: 3
           schema:
-            type: string
+            type: integer
         - name: accounts[1][account]
           in: query
           description: ''
@@ -80,9 +80,9 @@ paths:
           in: query
           description: ''
           required: false
-          example: '1'
+          example: 1
           schema:
-            type: string
+            type: integer
       responses:
         '200':
           description: ''

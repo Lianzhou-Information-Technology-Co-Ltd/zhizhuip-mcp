@@ -3,6 +3,7 @@
 # "文档缺陷兜底" 条目在文档站修好后删除。
 ignore:
   - /externalapi/tool/deleteSubAccountWhiteList # 清空子账号白名单，本期不暴露
+  - /externalapi/tool/setSubAccountWhiteList # 传空 ip_list 等于清空白名单，用户决定不暴露（2026-09-26）
 
 derived: # 从已有工具派生、只取响应 data 里一个字段
   - name: user_balance
@@ -70,13 +71,12 @@ tools:
     description: 分页查询某产品的子账号，返回子账号 id、账号密码、端口、国家、到期时间等；后面所有按子账号操作的工具都从这里取 id。
     readOnly: true
     params:
-      subAccounts: { description: 子账号 id 集合，多个以英文逗号连接（动态产品用） }
-      ids: { description: 子账号 id 集合，多个以英文逗号连接（时长类产品用） }
+      ids: { description: 子账号 id 集合，多个以英文逗号连接 }
       remark: { description: 按备注模糊搜索（动态产品用） }
       countryList: { description: 国家编码，多个以英文逗号分隔（动态产品用） }
       customUsername: { description: 按自定义账号搜索（时长类产品用） }
       search_type: { enum: [0, 1, 2], description: 搜索类型：0=自定义账密，1=子账号 IP，2=备注；搜索值放 searchArr（时长类产品用） }
-      searchArr: { description: 搜索值列表，与 search_type 配合（时长类产品用） }
+      searchArr: { description: 搜索值列表（时长类产品用）：search_type=0 时填自定义账号名，search_type=1 时填出口 IP，search_type=2 时只取第一项作为备注关键字 }
   /externalapi/device/userSetMeal:
     name: flow_package_list
     title: 已购流量套餐记录
@@ -111,9 +111,11 @@ tools:
     title: 批量子账号流量上限配置
     description: 分页查询多个动态住宅子账号的流量上限设置。
     readOnly: true
+    defaults: { page: 1, pagesize: 100 } # 后端对这两个参数没有默认值，不传会出错，由 MCP 补上
     params: # 文档缺陷兜底：accounts 写成 integer，实为多个 id；page 没有描述
       accounts: { description: 子账号 id 集合，多个以英文逗号连接 }
-      page: { description: 页码，从 1 起 }
+      page: { description: 页码，从 1 起，不传默认 1 }
+      pagesize: { description: 每页数量，最大 100，不传默认 100 }
   /externalapi/tool/getSubAccountWhiteList:
     name: sub_account_whitelist
     title: 子账号白名单
@@ -152,18 +154,22 @@ tools:
       ip_str: { description: IP 段前缀，1 到 3 段，如 104 或 104.223 }
       exclude_ip_str: { description: 要排除的 IP 段前缀，多个以英文逗号分隔 }
       country_code: { description: 国家编码，取 country_list 返回的编码 }
-      city_code: { description: 城市名称，取 city_list 返回的名称 }
+      city_code: { description: 城市名称，取 city_list 返回的名称（名称与编码相同） }
 
   # ===== 写操作工具（默认模式才有，执行前先向用户确认）=====
   /externalapi/device/accountAdd:
     name: sub_account_add
     title: 新增动态子账号
     description: 为动态住宅产品新增 num 个子账号，消耗主账号已购流量，不额外扣费。返回新建子账号的账号密码。
+    defaults: { agree: SOCKS5 } # 用户不用输入协议，没传时由 MCP 补 SOCKS5（2026-09-26 定）
     params:
+      num: { description: 要新增的子账号数量，1 到 500 }
       changeInterval: { description: IP 切换间隔，单位分钟，5 到 120 }
-      agree: { enum: [SOCKS5, HTTP, HTTPS], description: 协议 }
-      country: { description: "国家编码（ISO 3166-1 二字码），多个以英文逗号分隔，如 US,JP；可选国家用 country_list 查" } # 流式映射里的英文逗号要加引号，否则会被切成两个键
-      spec: { description: 指定供应商（资源池）id，取 provider_list 返回的 id }
+      agree: { required: false, enum: [SOCKS5, HTTP, HTTPS], description: 协议，不传默认 SOCKS5 }
+      country: { required: true, description: "国家编码（ISO 3166-1 二字码），多个以英文逗号分隔，如 US,JP；可选国家用 country_list 查" } # 两种动态产品都必填（2026-09-26 定）；流式映射里的英文逗号要加引号，否则会被切成两个键
+      state: { description: 州或省名称，多个以英文逗号分隔，取 state_list 返回的名称（名称与编码是同一个值） }
+      city: { description: 城市名称，取 city_list 返回的名称（名称与编码是同一个值） }
+      spec: { description: 指定一个供应商（资源池）id，取 provider_list 返回的 id，只能传一个 }
       use_random_username: { enum: [0, 1], description: 是否使用随机账号密码：0=否，1=是 }
   /externalapi/device/accountUpdate:
     name: sub_account_update
@@ -198,25 +204,17 @@ tools:
     title: 设置子账号流量上限
     description: 设置动态住宅某个子账号在一个周期内的流量上限，达到上限断开连接，下个周期恢复；同一个子账号只允许设置一个周期。
     params:
-      cycle: { enum: ['0', '1', '2', '3', '4'], description: 限制周期：0=每天，1=每周，2=每月，3=每季度，4=每年 }
-      limit_flow: { description: 上限流量，单位 GB }
+      cycle: { enum: [0, 1, 2, 3, 4, 5], description: 限制周期：0=每天，1=每周，2=每月，3=每季度，4=每年，5=永久（按累计用量，不清零） }
+      limit_flow: { description: 上限流量，单位 GB，0 到 1000000；传 0 表示删除该子账号的流量限制 }
   /externalapi/tool/accountLimitFlowBatchSet:
     name: sub_account_set_limit_flow_batch
     title: 批量设置子账号流量上限
     description: 批量设置多个动态住宅子账号在同一周期内各自的流量上限；同一个子账号只允许设置一个周期。
-    params:
-      cycle: { enum: ['0', '1', '2', '3', '4'], description: 限制周期：0=每天，1=每周，2=每月，3=每季度，4=每年 }
-      accounts: { description: 子账号配置列表，每项写子账号 id（account）和上限流量 GB（limit_flow） }
-      "accounts[0][account]": { description: 子账号 id }
-      "accounts[0][limit_flow]": { description: 上限流量，单位 GB }
-  /externalapi/tool/setSubAccountWhiteList:
-    name: sub_account_set_whitelist
-    title: 设置子账号白名单
-    description: 设置动态住宅某个子账号的 IP 白名单，整体覆盖原有列表。
-    products: [dynamic-no-expiry, dynamic-monthly] # 文档缺陷兜底：同 sub_account_whitelist
-    params:
-      id: { required: true, description: 子账号 id }
-      ip_list: { required: true, description: 白名单 IP 列表，多个以英文逗号分隔 }
+    params: # 文档缺陷兜底：cycle、accounts 文档标可选，后端 require，每项必须同时有 account 与 limit_flow（Tool.php accountLimitFlowBatchSet）
+      cycle: { required: true, enum: [0, 1, 2, 3, 4, 5], description: 限制周期：0=每天，1=每周，2=每月，3=每季度，4=每年，5=永久（按累计用量，不清零） }
+      accounts: { required: true, description: 子账号配置列表，每项写子账号 id（account）和上限流量 GB（limit_flow） }
+      "accounts[0][account]": { required: true, description: 子账号 id }
+      "accounts[0][limit_flow]": { required: true, description: 上限流量，单位 GB，0 到 1000000；传 0 表示删除该子账号的流量限制 }
   /externalapi/device/accountDelete:
     name: sub_account_delete
     title: 删除子账号
@@ -237,7 +235,7 @@ tools:
         destructive: true
         products: [dynamic-no-expiry, dynamic-monthly]
         params:
-          bill_timelen: { enum: [1, 2, 3], description: 流量有效时长，只有 dynamic-monthly 需要：1=30天，2=90天，3=180天 }
+          bill_timelen: { enum: [1, 2, 3], description: 流量有效时长，product 为 dynamic-monthly 时必填（后端校验）：1=30天，2=90天，3=180天；dynamic-no-expiry 不要传 }
           conpon_id: { description: 优惠券 id，用 coupon_list 查 }
       - name: order_buy_time_ip
         title: 购买时长 IP
@@ -251,7 +249,7 @@ tools:
           country: { description: 国家编码，用 country_list 查该产品可买的国家 } # 各产品页各写一套说明，合并后只留通用的
           city: { description: 城市名称，取 city_list 返回的名称；不传随机 }
           conpon_id: { description: 优惠券 id，用 coupon_list 查 }
-          specifyIps: { description: 指定从哪些 IP 段购买，每项写一个 IP 段前缀和该段要买的数量；IP 段用 ip_range_status 查 }
+          specifyIps: { description: 指定从哪些 IP 段购买，每项写一个 IP 段前缀和该段要买的数量，各段 count 之和必须等于 num；IP 段用 ip_range_status 查 }
           "specifyIps[0][ipStr]": { description: IP 段前缀，取 ip_range_status 返回的段 }
           "specifyIps[0][count]": { type: integer, description: 该段要买的数量 }
           bandwidth_num: { description: 购买时选定的增值带宽，可选值和价格用 bandwidth_package_list 查；数据中心没有带宽加购，不要传 }
@@ -288,21 +286,20 @@ tools:
     params:
       content: { description: 续费内容，按国家分组，每组写 ids、country、timelen，可选 renew_with_bandwidth }
       "content[0][ids]": { description: 该组要续费的子账号 id 列表 }
-      "content[0][country]": { description: 这组子账号的国家编码，取 sub_account_list 返回的 country }
+      "content[0][country]": { description: 这组子账号的国家编码，传 sub_account_list 返回的 country 即可；后端以子账号库里记录的国家为准 }
       "content[0][timelen]": { enum: [0, 1, 2, 3, 4], description: 续费时长：0=7天，1=30天，2=90天，3=180天，4=360天 }
       "content[0][renew_with_bandwidth]": { enum: [0, 1], description: 是否连同带宽一起续费：0=只续子账号，1=子账号和带宽一起续 }
       conpon_id: { description: 优惠券 id，用 coupon_list 查 }
   /externalapi/set_meal/renewOrderIpv6:
     name: order_renew_ipv6
     title: 续费 IPv6 时长 IP
-    description: 会从账户余额扣费。续费静态住宅 IPv6 时长 IP 子账号，content 按国家分组，每组写子账号 id 列表、国家、续费时长。
+    description: 会从账户余额扣费。续费静态住宅 IPv6 时长 IP 子账号，content 按国家分组，每组写子账号 id 列表、国家、续费时长；IPv6 续费不支持优惠券。
     destructive: true
     params:
       content: { description: 续费内容，按国家分组，每组写 ids、country、timelen }
       "content[0][ids]": { description: 该组要续费的子账号 id 列表 }
       "content[0][country]": { description: 这组子账号的国家编码，取 sub_account_list 返回的 country }
       "content[0][timelen]": { enum: [0, 1, 2, 3, 4], description: 续费时长：0=7天，1=30天，2=90天，3=180天，4=360天 }
-      conpon_id: { description: 优惠券 id，用 coupon_list 查 }
   /externalapi/product_order/bandwidthUpgradeOrder:
     name: order_bandwidth_upgrade
     title: 子账号带宽升级
@@ -314,7 +311,7 @@ tools:
   /externalapi/product_order/createOrderBack:
     name: order_refund_apply
     title: 申请退单
-    description: 为静态住宅的一个子账号申请退单，提交后由人工审核，不会立即退款。
+    description: 为静态住宅的一个子账号申请退单，提交后由人工审核，不会立即退款。后端限制：只能在下单后 1 天内申请；已续费、有进行中的带宽升级订单、消费记录已开票的子账号不能退；同一子账号重复申请会被拒。
     params: # 文档缺陷兜底：remark 写成 integer
       remark: { type: string, description: 退单原因 }
       id: { description: 子账号 id }

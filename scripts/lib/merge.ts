@@ -22,6 +22,8 @@ export interface ToolOverride {
   /** 显式指定 product 枚举；不写就按有页面的产品自动得出 */
   products?: string[];
   fixed?: Record<string, string | number>;
+  /** 调用方没传时由运行期补上的默认值 */
+  defaults?: Record<string, string | number>;
   drop?: string[];
   params?: Record<string, ParamOverride>;
 }
@@ -35,7 +37,7 @@ export interface Product { label: string; tag: string; params: ProductParams }
 
 /** 产品表：键就是 product 枚举值与 spec/pages 目录名；tag 是文档站分组；params 是运行期展开成的后端参数 */
 export const PRODUCTS: Record<string, Product> = {
-  'dynamic-no-expiry': { label: '动态住宅流量（永久）', tag: '用户IP子账号管理/动态住宅流量子账号(永久)', params: { type: 0, status: 0 } },
+  'dynamic-no-expiry': { label: '动态住宅流量（永久）', tag: '用户IP子账号管理/动态住宅流量子账号(永久)', params: { type: 0, status: 0, is_month: 0 } },
   'dynamic-monthly': { label: '动态住宅流量（期限）', tag: '用户IP子账号管理/动态住宅流量子账号(期限)', params: { type: 0, status: 0, is_month: 1 } },
   'static-standard': { label: '静态住宅（非原生）', tag: '用户IP子账号管理/静态住宅（非原生）时长子账号', params: { type: 1, status: 1, native: 0 } },
   'static-native': { label: '静态住宅（原生）', tag: '用户IP子账号管理/静态住宅（原生）时长子账号', params: { type: 1, status: 1, native: 1 } },
@@ -275,6 +277,8 @@ export function mergeGroup(pages: Page[], ov: ToolOverride): ToolDef {
     }
   }
 
+  for (const k of Object.keys(ov.defaults ?? {})) if (!props[k]) throw new Error(`${ov.name}: defaults 参数 ${k} 在文档里不存在`);
+
   // 3. 子账号 id 一律 string
   forceIdStrings(root);
 
@@ -318,6 +322,7 @@ export function mergeGroup(pages: Page[], ov: ToolOverride): ToolDef {
     method: ov.readOnly ? 'GET' : 'POST',
     path: pages[0].path,
     ...(fixed ? { fixed } : {}),
+    ...(ov.defaults ? { defaults: ov.defaults } : {}),
     ...(productsOut ? { products: productsOut } : {}),
     inputSchema: { type: 'object', properties, required, additionalProperties: false },
   };

@@ -39,12 +39,6 @@ paths:
                   description: 计费模式：0=按流量，1=按时长，2=按ip数。<b>此处固定为：1</b>
                   example: 1
                   type: integer
-                conpon_id:
-                  description: >-
-                    优惠券id。根据<a href="/api-116480625"
-                    target="_blank">查询优惠券列表</a>获取对应的优惠券id
-                  example: 322
-                  type: integer
                 native:
                   type: integer
                   description: 原生:0=非原生,1=本土原生。<b>此处固定为：1</b>
@@ -93,6 +87,7 @@ paths:
                 - content[1][country]
                 - content[1][ids][0]
                 - content[1][timelen]
+            examples: {}
       responses:
         '200':
           description: ''

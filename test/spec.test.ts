@@ -14,7 +14,7 @@ const STATIC3 = ['static-standard', 'static-native', 'static-isp-native'];
 const PRODUCT_PARAMS = ['type', 'status', 'native', 'version', 'is_month'];
 
 describe('spec/tools.json', () => {
-  it('恰好 41 个工具，21 个只读，名字与设计文档一致', () => {
+  it('恰好 40 个工具，21 个只读，名字与设计文档一致', () => {
     expect(tools.map(t => t.name)).toEqual([
       'bandwidth_detail', 'bandwidth_package_list', 'bandwidth_trend',
       'city_list', 'country_list', 'coupon_list', 'flow_package_list', 'ip_booking', 'ip_range_status',
@@ -24,7 +24,7 @@ describe('spec/tools.json', () => {
       'sub_account_add', 'sub_account_delete', 'sub_account_delete_batch', 'sub_account_flow',
       'sub_account_limit_flow', 'sub_account_limit_flow_batch', 'sub_account_list', 'sub_account_set_credentials',
       'sub_account_set_limit_flow', 'sub_account_set_limit_flow_batch', 'sub_account_set_password_batch',
-      'sub_account_set_whitelist', 'sub_account_toggle_port', 'sub_account_update', 'sub_account_update_batch',
+      'sub_account_toggle_port', 'sub_account_update', 'sub_account_update_batch',
       'sub_account_whitelist', 'user_balance', 'user_info', 'user_price',
     ]);
     expect(tools.filter(t => t.readOnly)).toHaveLength(21);
@@ -54,6 +54,7 @@ describe('spec/tools.json', () => {
     expect(list.inputSchema.properties.product.enum).toEqual(PRODUCT_KEYS);
     expect(list.inputSchema.required[0]).toBe('product');
     expect(list.products?.datacenter).toEqual({ type: 2, status: 1 });
+    expect(list.products?.['dynamic-no-expiry']).toEqual({ type: 0, status: 0, is_month: 0 });
     expect(list.products?.['static-ipv6']).toEqual({ type: 1, status: 1, native: 1, version: 6 });
     expect(byName('bandwidth_trend').inputSchema.properties.product.enum).toEqual(STATIC3);
     expect(byName('state_list').inputSchema.properties.product.enum).toEqual(DYNAMIC);
@@ -73,6 +74,8 @@ describe('spec/tools.json', () => {
     expect(Object.keys(dyn.inputSchema.properties).sort()).toEqual(['bill_timelen', 'conpon_id', 'num', 'product']);
     expect(dyn.inputSchema.required).toEqual(['product', 'num']);
     expect(dyn.inputSchema.properties.bill_timelen.enum).toEqual([1, 2, 3]);
+    expect(dyn.inputSchema.properties.bill_timelen.description).toMatch(/dynamic-monthly 时必填/);
+    expect(dyn.inputSchema.properties.bill_timelen.description).toMatch(/dynamic-no-expiry 不要传/);
 
     const ip = byName('order_buy_time_ip');
     expect(ip.inputSchema.properties.product.enum).toEqual([...STATIC3, 'datacenter']);
@@ -109,8 +112,9 @@ describe('spec/tools.json', () => {
     const list = byName('sub_account_list');
     expect(list.inputSchema.required).toEqual(['product', 'page', 'pagesize']);
     expect(list.inputSchema.properties.pagesize.description).toMatch(/100/);
-    expect(list.inputSchema.properties.subAccounts.type).toBe('string');
+    expect(list.inputSchema.properties.subAccounts).toBeUndefined(); // 文档站 2026-09-26 已把动态页的 subAccounts 改成后端真正读的 ids
     expect(list.inputSchema.properties.ids.type).toBe('string');
+    expect(list.inputSchema.properties.ids.description).not.toMatch(/时长类产品用/);
     expect(list.inputSchema.properties.search_type).toMatchObject({ type: 'integer', enum: [0, 1, 2] });
   });
 
@@ -126,8 +130,10 @@ describe('spec/tools.json', () => {
 
     expect(byName('sub_account_whitelist').inputSchema.properties.product.enum).toEqual(DYNAMIC);
     expect(byName('sub_account_whitelist').inputSchema.required).toEqual(['product', 'id']);
-    expect(byName('sub_account_set_whitelist').inputSchema.required).toEqual(['product', 'id', 'ip_list']);
+    expect(tools.find(t => t.name === 'sub_account_set_whitelist')).toBeUndefined(); // 传空 ip_list 等于清空白名单，用户决定不暴露
     expect(byName('sub_account_delete').inputSchema.required).toEqual(['product', 'id']);
+    expect(byName('sub_account_limit_flow_batch').defaults).toEqual({ page: 1, pagesize: 100 });
+    expect(byName('sub_account_toggle_port').inputSchema.required).toEqual(['product', 'ids', 'use_ip_port']);
 
     expect(byName('ip_booking').inputSchema.properties.country.description).toMatch(/名称/);
     expect(byName('ip_booking').inputSchema.properties.country.description).not.toMatch(/ISO/);
@@ -135,6 +141,43 @@ describe('spec/tools.json', () => {
     expect(byName('sub_account_limit_flow_batch').inputSchema.properties.page.description).toMatch(/页码/);
     expect(byName('order_buy_time_ip').inputSchema.properties.num.description).toMatch(/1 到 300(?!0)/);
     expect(byName('order_buy_time_ip').description).not.toMatch(/不传默认/);
+  });
+
+  it('后端核对第二轮：限流必填与周期 5、测试 IP 上限 100、IPv6 续费无优惠券', () => {
+    const one = byName('sub_account_set_limit_flow');
+    expect(one.inputSchema.required).toEqual(['product', 'account', 'cycle', 'limit_flow']);
+    expect(one.inputSchema.properties.cycle).toMatchObject({ type: 'integer', enum: [0, 1, 2, 3, 4, 5] });
+    expect(one.inputSchema.properties.limit_flow.type).toBe('integer');
+    expect(one.inputSchema.properties.limit_flow.description).toMatch(/0 表示删除/);
+
+    const batch = byName('sub_account_set_limit_flow_batch');
+    expect(batch.inputSchema.required).toEqual(['product', 'cycle', 'accounts']);
+    expect(batch.inputSchema.properties.cycle).toMatchObject({ type: 'integer', enum: [0, 1, 2, 3, 4, 5] });
+    expect([...(batch.inputSchema.properties.accounts.items?.required ?? [])].sort()).toEqual(['account', 'limit_flow']);
+    expect(batch.inputSchema.properties.accounts.items?.properties?.limit_flow.type).toBe('integer');
+
+    expect(byName('order_buy_test_ip').inputSchema.properties.num.description).toMatch(/1-100/);
+    expect(byName('order_renew_ipv6').inputSchema.properties.conpon_id).toBeUndefined();
+  });
+
+  it('后端核对第三轮：新增子账号的必填与默认协议、名称类参数、几处描述补充', () => {
+    const add = byName('sub_account_add');
+    expect(add.inputSchema.required).toEqual(['product', 'num', 'changeInterval', 'country']);
+    expect(add.defaults).toEqual({ agree: 'SOCKS5' });
+    expect(add.inputSchema.properties.agree.description).toMatch(/不传默认 SOCKS5/);
+    expect(add.inputSchema.properties.agree.description).not.toMatch(/下必填/);
+    expect(add.inputSchema.properties.num.description).toMatch(/1 到 500/);
+    expect(add.inputSchema.properties.changeInterval.description).toMatch(/5 到 120/);
+    expect(add.inputSchema.properties.state.description).toMatch(/名称/);
+    expect(add.inputSchema.properties.city.description).toMatch(/名称/);
+    expect(add.inputSchema.properties.spec).toMatchObject({ type: 'integer' });
+    expect(add.inputSchema.properties.spec.description).toMatch(/一个/);
+
+    expect(byName('ip_range_status').inputSchema.properties.city_code.description).toMatch(/名称与编码相同/);
+    expect(byName('sub_account_list').inputSchema.properties.searchArr.description).toMatch(/search_type=1/);
+    expect(byName('order_refund_apply').description).toMatch(/1 天内/);
+    expect(byName('order_buy_time_ip').inputSchema.properties.specifyIps.description).toMatch(/之和必须等于 num/);
+    expect(byName('order_renew').inputSchema.properties.content.items?.properties?.country.description).toMatch(/以.*记录的国家为准/);
   });
 
   it('子账号 id 类参数一律 string，数组元素与嵌套对象里的也是', () => {
@@ -172,10 +215,11 @@ describe('spec/tools.json', () => {
     expect(byName('sub_account_add').inputSchema.properties.country.description).not.toMatch(/如 US。/);
   });
 
-  it('下单与续费工具的 conpon_id 都是 integer，与 coupon_list 返回的 id 一致', () => {
-    for (const n of ['order_buy_dynamic', 'order_buy_time_ip', 'order_buy_ipv6', 'order_renew', 'order_renew_ipv6']) {
+  it('下单与续费工具的 conpon_id 都是 integer，与 coupon_list 返回的 id 一致；IPv6 续费没有这个参数', () => {
+    for (const n of ['order_buy_dynamic', 'order_buy_time_ip', 'order_buy_ipv6', 'order_renew']) {
       expect(byName(n).inputSchema.properties.conpon_id.type, n).toBe('integer');
     }
+    expect(byName('order_renew_ipv6').inputSchema.properties.conpon_id).toBeUndefined();
   });
 
   it('spec/tools.json 与当前生成结果一致（改了 overrides 要重新 npm run build-spec）', () => {

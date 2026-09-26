@@ -10,7 +10,7 @@ import type { ToolDef } from './types.js';
 
 const USAGE = `用法：zhizhuip-mcp [--readonly] [--yes]
       zhizhuip-mcp setup [--token 你的token] [--readonly] [--npx]
-  不带参数     全部 41 个工具，含下单扣费与删除子账号；写操作执行前先向用户确认
+  不带参数     全部 40 个工具，含下单扣费与删除子账号；写操作执行前先向用户确认
   --readonly   只暴露 21 个只读工具
   --yes        写操作不确认直接执行，给自动化脚本用
   setup        打印 Claude Code、Claude Desktop、Codex、Cursor、VS Code、Zed、Windsurf 的配置片段，不改任何文件；

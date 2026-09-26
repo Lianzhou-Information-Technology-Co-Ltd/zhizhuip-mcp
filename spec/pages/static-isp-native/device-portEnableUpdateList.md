@@ -53,6 +53,7 @@ paths:
                 - status
                 - native
                 - ids
+                - use_ip_port
             examples: {}
       responses:
         '200':

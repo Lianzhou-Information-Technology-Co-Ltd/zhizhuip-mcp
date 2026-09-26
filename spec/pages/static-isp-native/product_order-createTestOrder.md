@@ -36,7 +36,7 @@ paths:
                   example: 1
                   type: integer
                 num:
-                  description: 需要购买的子账号数量。范围：1-300之间
+                  description: 需要购买的子账号数量。范围：1-100之间
                   example: 1
                   type: integer
                 country:

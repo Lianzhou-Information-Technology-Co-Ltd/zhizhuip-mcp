@@ -174,7 +174,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -258,7 +259,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -361,7 +363,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -499,7 +502,7 @@
         },
         "city_code": {
           "type": "string",
-          "description": "城市名称，取 city_list 返回的名称"
+          "description": "城市名称，取 city_list 返回的名称（名称与编码相同）"
         },
         "ip_str": {
           "type": "string",
@@ -535,7 +538,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -572,7 +576,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -682,7 +687,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -711,7 +717,7 @@
         },
         "bill_timelen": {
           "type": "integer",
-          "description": "流量有效时长，只有 dynamic-monthly 需要：1=30天，2=90天，3=180天",
+          "description": "流量有效时长，product 为 dynamic-monthly 时必填（后端校验）：1=30天，2=90天，3=180天；dynamic-no-expiry 不要传",
           "enum": [
             1,
             2,
@@ -853,7 +859,7 @@
         },
         "num": {
           "type": "integer",
-          "description": "需要购买的子账号数量。范围：1-300之间"
+          "description": "需要购买的子账号数量。范围：1-100之间"
         },
         "country": {
           "type": "string",
@@ -1028,7 +1034,7 @@
             },
             "additionalProperties": false
           },
-          "description": "指定从哪些 IP 段购买，每项写一个 IP 段前缀和该段要买的数量；IP 段用 ip_range_status 查"
+          "description": "指定从哪些 IP 段购买，每项写一个 IP 段前缀和该段要买的数量，各段 count 之和必须等于 num；IP 段用 ip_range_status 查"
         }
       },
       "required": [
@@ -1044,7 +1050,7 @@
   {
     "name": "order_refund_apply",
     "title": "申请退单",
-    "description": "为静态住宅的一个子账号申请退单，提交后由人工审核，不会立即退款。",
+    "description": "为静态住宅的一个子账号申请退单，提交后由人工审核，不会立即退款。后端限制：只能在下单后 1 天内申请；已续费、有进行中的带宽升级订单、消费记录已开票的子账号不能退；同一子账号重复申请会被拒。",
     "readOnly": false,
     "destructive": false,
     "method": "POST",
@@ -1148,7 +1154,7 @@
             "properties": {
               "country": {
                 "type": "string",
-                "description": "这组子账号的国家编码，取 sub_account_list 返回的 country"
+                "description": "这组子账号的国家编码，传 sub_account_list 返回的 country 即可；后端以子账号库里记录的国家为准"
               },
               "ids": {
                 "type": "array",
@@ -1198,7 +1204,7 @@
   {
     "name": "order_renew_ipv6",
     "title": "续费 IPv6 时长 IP",
-    "description": "会从账户余额扣费。续费静态住宅 IPv6 时长 IP 子账号，content 按国家分组，每组写子账号 id 列表、国家、续费时长。",
+    "description": "会从账户余额扣费。续费静态住宅 IPv6 时长 IP 子账号，content 按国家分组，每组写子账号 id 列表、国家、续费时长；IPv6 续费不支持优惠券。",
     "readOnly": false,
     "destructive": true,
     "method": "POST",
@@ -1212,10 +1218,6 @@
     "inputSchema": {
       "type": "object",
       "properties": {
-        "conpon_id": {
-          "type": "integer",
-          "description": "优惠券 id，用 coupon_list 查"
-        },
         "content": {
           "type": "array",
           "items": {
@@ -1272,7 +1274,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -1309,7 +1312,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -1352,10 +1356,14 @@
     "destructive": false,
     "method": "POST",
     "path": "/externalapi/device/accountAdd",
+    "defaults": {
+      "agree": "SOCKS5"
+    },
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -1376,7 +1384,7 @@
         },
         "num": {
           "type": "integer",
-          "description": "需要生成的子账号数量"
+          "description": "要新增的子账号数量，1 到 500"
         },
         "changeInterval": {
           "type": "integer",
@@ -1384,15 +1392,15 @@
         },
         "country": {
           "type": "string",
-          "description": "国家编码（ISO 3166-1 二字码），多个以英文逗号分隔，如 US,JP；可选国家用 country_list 查。产品 dynamic-no-expiry 下必填"
+          "description": "国家编码（ISO 3166-1 二字码），多个以英文逗号分隔，如 US,JP；可选国家用 country_list 查"
         },
         "state": {
           "type": "string",
-          "description": "州/省份,多个以逗号隔开:'anhui,jiangsu'"
+          "description": "州或省名称，多个以英文逗号分隔，取 state_list 返回的名称（名称与编码是同一个值）"
         },
         "city": {
           "type": "string",
-          "description": "城市code"
+          "description": "城市名称，取 city_list 返回的名称（名称与编码是同一个值）"
         },
         "url": {
           "type": "string",
@@ -1412,7 +1420,7 @@
         },
         "agree": {
           "type": "string",
-          "description": "协议。产品 dynamic-no-expiry 下必填",
+          "description": "协议，不传默认 SOCKS5",
           "enum": [
             "SOCKS5",
             "HTTP",
@@ -1421,13 +1429,14 @@
         },
         "spec": {
           "type": "integer",
-          "description": "指定供应商（资源池）id，取 provider_list 返回的 id"
+          "description": "指定一个供应商（资源池）id，取 provider_list 返回的 id，只能传一个"
         }
       },
       "required": [
         "product",
         "num",
-        "changeInterval"
+        "changeInterval",
+        "country"
       ],
       "additionalProperties": false
     }
@@ -1443,7 +1452,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -1485,7 +1495,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -1527,7 +1538,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -1583,7 +1595,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -1622,10 +1635,15 @@
     "destructive": false,
     "method": "GET",
     "path": "/externalapi/tool/accountLimitFlowBatchDetail",
+    "defaults": {
+      "page": 1,
+      "pagesize": 100
+    },
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -1650,11 +1668,11 @@
         },
         "page": {
           "type": "integer",
-          "description": "页码，从 1 起"
+          "description": "页码，从 1 起，不传默认 1"
         },
         "pagesize": {
           "type": "integer",
-          "description": "分页数量，最大值100"
+          "description": "每页数量，最大 100，不传默认 100"
         }
       },
       "required": [
@@ -1675,7 +1693,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -1738,15 +1757,11 @@
         },
         "ids": {
           "type": "string",
-          "description": "子账号 id 集合，多个以英文逗号连接（时长类产品用）"
+          "description": "子账号 id 集合，多个以英文逗号连接"
         },
         "remark": {
           "type": "string",
           "description": "按备注模糊搜索（动态产品用）"
-        },
-        "subAccounts": {
-          "type": "string",
-          "description": "子账号 id 集合，多个以英文逗号连接（动态产品用）"
         },
         "countryList": {
           "type": "string",
@@ -1766,7 +1781,7 @@
           "items": {
             "type": "string"
           },
-          "description": "搜索值列表，与 search_type 配合（时长类产品用）"
+          "description": "搜索值列表（时长类产品用）：search_type=0 时填自定义账号名，search_type=1 时填出口 IP，search_type=2 时只取第一项作为备注关键字"
         }
       },
       "required": [
@@ -1788,7 +1803,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -1883,7 +1899,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -1907,24 +1924,27 @@
           "description": "子账号id"
         },
         "cycle": {
-          "type": "string",
-          "description": "限制周期：0=每天，1=每周，2=每月，3=每季度，4=每年",
+          "type": "integer",
+          "description": "限制周期：0=每天，1=每周，2=每月，3=每季度，4=每年，5=永久（按累计用量，不清零）",
           "enum": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4"
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
           ]
         },
         "limit_flow": {
-          "type": "string",
-          "description": "上限流量，单位 GB"
+          "type": "integer",
+          "description": "上限流量，单位 GB，0 到 1000000；传 0 表示删除该子账号的流量限制"
         }
       },
       "required": [
         "product",
-        "account"
+        "account",
+        "cycle",
+        "limit_flow"
       ],
       "additionalProperties": false
     }
@@ -1940,7 +1960,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -1960,14 +1981,15 @@
           "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
         },
         "cycle": {
-          "type": "string",
-          "description": "限制周期：0=每天，1=每周，2=每月，3=每季度，4=每年",
+          "type": "integer",
+          "description": "限制周期：0=每天，1=每周，2=每月，3=每季度，4=每年，5=永久（按累计用量，不清零）",
           "enum": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4"
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
           ]
         },
         "accounts": {
@@ -1980,17 +2002,23 @@
                 "description": "子账号 id"
               },
               "limit_flow": {
-                "type": "string",
-                "description": "上限流量，单位 GB"
+                "type": "integer",
+                "description": "上限流量，单位 GB，0 到 1000000；传 0 表示删除该子账号的流量限制"
               }
             },
-            "additionalProperties": false
+            "additionalProperties": false,
+            "required": [
+              "account",
+              "limit_flow"
+            ]
           },
           "description": "子账号配置列表，每项写子账号 id（account）和上限流量 GB（limit_flow）"
         }
       },
       "required": [
-        "product"
+        "product",
+        "cycle",
+        "accounts"
       ],
       "additionalProperties": false
     }
@@ -2068,53 +2096,6 @@
     }
   },
   {
-    "name": "sub_account_set_whitelist",
-    "title": "设置子账号白名单",
-    "description": "设置动态住宅某个子账号的 IP 白名单，整体覆盖原有列表。",
-    "readOnly": false,
-    "destructive": false,
-    "method": "POST",
-    "path": "/externalapi/tool/setSubAccountWhiteList",
-    "products": {
-      "dynamic-no-expiry": {
-        "type": 0,
-        "status": 0
-      },
-      "dynamic-monthly": {
-        "type": 0,
-        "status": 0,
-        "is_month": 1
-      }
-    },
-    "inputSchema": {
-      "type": "object",
-      "properties": {
-        "product": {
-          "type": "string",
-          "enum": [
-            "dynamic-no-expiry",
-            "dynamic-monthly"
-          ],
-          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限）"
-        },
-        "id": {
-          "type": "string",
-          "description": "子账号 id"
-        },
-        "ip_list": {
-          "type": "string",
-          "description": "白名单 IP 列表，多个以英文逗号分隔"
-        }
-      },
-      "required": [
-        "product",
-        "id",
-        "ip_list"
-      ],
-      "additionalProperties": false
-    }
-  },
-  {
     "name": "sub_account_toggle_port",
     "title": "批量开关端口连接",
     "description": "批量开启或关闭静态住宅子账号的 IP 端口连接状态。",
@@ -2166,7 +2147,8 @@
       },
       "required": [
         "product",
-        "ids"
+        "ids",
+        "use_ip_port"
       ],
       "additionalProperties": false
     }
@@ -2182,7 +2164,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -2228,7 +2211,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,
@@ -2278,7 +2262,8 @@
     "products": {
       "dynamic-no-expiry": {
         "type": 0,
-        "status": 0
+        "status": 0,
+        "is_month": 0
       },
       "dynamic-monthly": {
         "type": 0,

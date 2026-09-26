@@ -59,7 +59,7 @@ paths:
           example: test
           schema:
             type: string
-        - name: subAccounts
+        - name: ids
           in: query
           description: 子账号id集合，多个以英文逗号连接
           required: false
@@ -73,6 +73,13 @@ paths:
             target="_blank">国家编码查询文档</a>得到
           required: false
           example: US
+          schema:
+            type: string
+        - name: is_month
+          in: query
+          description: 此处固定为：0
+          required: true
+          example: '0'
           schema:
             type: string
       responses:

@@ -124,15 +124,15 @@ describe('mergeGroup', () => {
   it('overrides 的 products 可以指定页面之外的产品；未知产品报错', () => {
     const t = mergeGroup([page('a', '/p', T.noExpiry, [['is_month', false, 'integer', '此处固定为：1'], ['id', false, 'integer']])], ov('x', { products: ['dynamic-no-expiry', 'dynamic-monthly'] }));
     expect(t.inputSchema.properties.product?.enum).toEqual(['dynamic-no-expiry', 'dynamic-monthly']);
-    expect(t.products).toEqual({ 'dynamic-no-expiry': { type: 0, status: 0 }, 'dynamic-monthly': { type: 0, status: 0, is_month: 1 } });
+    expect(t.products).toEqual({ 'dynamic-no-expiry': { type: 0, status: 0, is_month: 0 }, 'dynamic-monthly': { type: 0, status: 0, is_month: 1 } });
     expect(() => mergeGroup([page('a', '/p', T.noExpiry, [])], ov('x', { products: ['dynamic-weekly'] }))).toThrow(/未知的产品 dynamic-weekly/);
   });
 
   it('页面固定值与产品表不一致时打印警告，仍按产品表处理', () => {
     const warn = vi.spyOn(console, 'error').mockImplementation(() => {});
     const t = mergeGroup([page('api-9', '/p', T.noExpiry, [['is_month', false, 'integer', '此处固定为：1']], { is_month: 1 })], ov('x'));
-    expect(warn).toHaveBeenCalledWith(expect.stringMatching(/api-9.*is_month.*固定为 1.*dynamic-no-expiry/));
-    expect(t.fixed).toEqual({ type: 0, status: 0 });
+    expect(warn).toHaveBeenCalledWith(expect.stringMatching(/api-9.*is_month.*固定为 1.*dynamic-no-expiry.*is_month=0/));
+    expect(t.fixed).toEqual({ type: 0, status: 0, is_month: 0 });
     warn.mockClear();
     mergeGroup([page('api-8', '/p', T.datacenter, [['type', true, 'integer', '此处固定为：2']], { type: 2 })], ov('x'));
     expect(warn).not.toHaveBeenCalled();
@@ -196,6 +196,12 @@ describe('mergeGroup', () => {
     expect(t.method).toBe('GET');
     expect(mergeGroup([page('a', '/p', T.standard, [])], ov('x')).method).toBe('POST');
     expect(() => mergeGroup([page('a', '/p', T.standard, [])], ov('x', { params: { nope: { type: 'integer' } } }))).toThrow(/nope/);
+  });
+
+  it('overrides 的 defaults 原样写进工具，引用不存在的参数报错', () => {
+    const t = mergeGroup([page('a', '/p', T.noExpiry, [['accounts', true], ['page', false, 'integer'], ['pagesize', false, 'integer']])], ov('x', { defaults: { page: 1, pagesize: 100 } }));
+    expect(t.defaults).toEqual({ page: 1, pagesize: 100 });
+    expect(() => mergeGroup([page('a', '/p', T.noExpiry, [])], ov('x', { defaults: { nope: 1 } }))).toThrow(/defaults 参数 nope/);
   });
 
   it('类型冲突时 integer 优先，描述取最长；一页 array 一页标量时取标量', () => {
@@ -265,6 +271,7 @@ describe('PRODUCTS', () => {
   it('七个产品，枚举值与设计文档一致，展开参数正确', () => {
     expect(Object.keys(PRODUCTS)).toEqual(['dynamic-no-expiry', 'dynamic-monthly', 'static-standard', 'static-native', 'static-isp-native', 'static-ipv6', 'datacenter']);
     expect(PRODUCTS['static-ipv6'].params).toEqual({ type: 1, status: 1, native: 1, version: 6 });
+    expect(PRODUCTS['dynamic-no-expiry'].params).toEqual({ type: 0, status: 0, is_month: 0 });
     expect(PRODUCTS['dynamic-monthly'].params).toEqual({ type: 0, status: 0, is_month: 1 });
   });
 });
