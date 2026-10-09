@@ -55,10 +55,10 @@ const LIST = { name: 'sub_account_list', arguments: { product: 'static-native', 
 const WRITE = { name: 'sub_account_update_batch', arguments: { product: 'dynamic-no-expiry', ids: '12,13', remark: '测试' } };
 
 describe('stdio server', () => {
-  it('不带参数暴露全部 40 个工具，扣费与删除工具带 destructiveHint', async () => {
+  it('不带参数暴露全部 44 个工具，扣费与删除工具带 destructiveHint', async () => {
     const c = await connect([]);
     const { tools } = await c.listTools();
-    expect(tools).toHaveLength(40);
+    expect(tools).toHaveLength(44);
     expect(tools.find(t => t.name === 'order_buy_time_ip')?.annotations).toMatchObject({ readOnlyHint: false, destructiveHint: true, idempotentHint: false });
     expect(tools.find(t => t.name === 'ip_booking')?.annotations).toMatchObject({ readOnlyHint: false, destructiveHint: false });
     expect(tools.find(t => t.name === 'user_info')?.annotations).toMatchObject({ readOnlyHint: true, idempotentHint: true });
@@ -76,6 +76,54 @@ describe('stdio server', () => {
     expect(resources.map(r => r.uri)).toEqual(['zhizhuip://docs/dynamic-proxy-session']);
     const read = await c.readResource({ uri: 'zhizhuip://docs/dynamic-proxy-session' });
     expect((read.contents[0] as { text: string }).text).toContain('proxy.zhizhuip.com');
+    await c.close();
+  }, 20_000);
+
+  it('动态带宽列表发送 product_type_id=11，readonly 不暴露新写工具', async () => {
+    const c = await connect(['--readonly']);
+    hits.length = 0;
+    const { tools } = await c.listTools();
+    expect(tools.some(t => t.name.startsWith('order_'))).toBe(false);
+    const r = await c.callTool({ name: 'sub_account_list', arguments: { product: 'dynamic-bandwidth', page: 1, pagesize: 10 } });
+    expect(r.isError).toBeFalsy();
+    expect(hits).toHaveLength(1);
+    expect(hits[0]).toMatchObject({ method: 'GET', url: '/externalapi/device/accountList?page=1&pagesize=10&product_type_id=11&is_mcp_send=1' });
+    await c.close();
+  }, 20_000);
+
+  it('动态带宽四个写操作先确认再发到各自路由，优惠券字段与子账号编号原样传递', async () => {
+    const c = await connect([]);
+    const cases: [string, string, Record<string, unknown>][] = [
+      ['order_buy_dynamic_bandwidth', 'product_order/createProductOrder', { country: 'US', timelen: 1, bandwidth_num: 10, conpon_id: 7 }],
+      ['order_renew_dynamic_bandwidth', 'set_meal/renewOrder', { sub_account_id: '10', timelen: 2, conpon_id: 7 }],
+      ['order_dynamic_bandwidth_upgrade', 'product_order/dynamicBandwidthUpgradeOrder', { sub_account_id: '10', bandwidth_num: 20, conpon_id: 7 }],
+      ['order_refund_dynamic_bandwidth_apply', 'product_order/createOrderBack', { sub_account_id: '10', remark: '不再使用' }],
+    ];
+    for (const [name, path, args] of cases) {
+      hits.length = 0;
+      const first = await c.callTool({ name, arguments: args });
+      expect(first.isError, name).toBeFalsy();
+      const token = textOf(first).match(/confirm_token=([0-9a-f]+)/)?.[1];
+      expect(token, name).toBeTruthy();
+      expect(hits, name).toHaveLength(0);
+      const result = await c.callTool({ name, arguments: { ...args, confirm_token: token } });
+      expect(result.isError, name).toBeFalsy();
+      expect(hits, name).toHaveLength(1);
+      expect(hits[0]).toMatchObject({ method: 'POST', url: '/externalapi/' + path });
+      expect(Object.fromEntries(new URLSearchParams(hits[0].body))).toEqual({
+        ...Object.fromEntries(Object.entries(args).map(([k, v]) => [k, String(v)])), product_type_id: '11', is_mcp_send: '1',
+      });
+    }
+    hits.length = 0;
+    for (const args of [
+      { sub_account_id: '10', timelen: 1, product_type_id: 12 },
+      { id: '78', timelen: 1 },
+      { sub_account_id: '10', timelen: 0 },
+    ]) {
+      const bad = await c.callTool({ name: 'order_renew_dynamic_bandwidth', arguments: args });
+      expect(bad.isError).toBe(true);
+    }
+    expect(hits).toHaveLength(0);
     await c.close();
   }, 20_000);
 

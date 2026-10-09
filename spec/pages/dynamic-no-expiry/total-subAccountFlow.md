@@ -19,7 +19,7 @@ paths:
       parameters:
         - name: access_token
           in: query
-          description: 用户token。用户登录之后，获取token
+          description: 用户api key。<a href="/9518263m0" target="_blank">api key获取方式</a>
           required: true
           example: '{{access_token}}'
           schema:
@@ -81,7 +81,7 @@ paths:
                               type: string
                             flow:
                               type: string
-                              description: 消耗流量(单位Mb)
+                              description: 消耗流量(单位MB)
                           required:
                             - time
                             - flow
@@ -106,6 +106,25 @@ paths:
                   - msg
                   - time
                   - data
+              example:
+                code: 1
+                msg: 获取成功!
+                time: '1753240306'
+                data:
+                  rows:
+                    - time: '2025-07-18'
+                      flow: '8407.17'
+                    - time: '2025-07-19'
+                      flow: '4844.14'
+                    - time: '2025-07-20'
+                      flow: '5094.96'
+                    - time: '2025-07-21'
+                      flow: '8336.39'
+                    - time: '2025-07-22'
+                      flow: '9700.24'
+                    - time: '2025-07-23'
+                      flow: '2967.32'
+                  total: 6
           headers: {}
           x-apifox-name: 成功
       security: []

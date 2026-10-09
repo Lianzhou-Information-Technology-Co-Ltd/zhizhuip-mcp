@@ -19,7 +19,7 @@ paths:
       parameters:
         - name: access_token
           in: query
-          description: ''
+          description: 用户api key。<a href="/9518263m0" target="_blank">api key获取方式</a>
           required: true
           example: '{{access_token}}'
           schema:
@@ -154,6 +154,59 @@ paths:
                   - msg
                   - time
                   - data
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    code: 1
+                    msg: 获取成功!
+                    time: '1757560325'
+                    data:
+                      list:
+                        - id: 11
+                          max_bandwidth: 100
+                          min_bandwidth: 5
+                          start_time: 1757559806
+                          end_time: 1758164604
+                          start_time_text: '2025-09-11 11:03:26'
+                          end_time_text: '2025-09-18 11:03:24'
+                          create_time: 1757559806
+                          update_time: 1757559806
+                          create_time_text: '2025-09-11 11:03:26'
+                          update_time_text: '2025-09-11 11:03:26'
+                      end_time: 1758164604
+                      end_time_text: '2025-09-18 11:03:24'
+                      current_max_bandwidth: 100
+                      current_min_bandwidth: 5
+                      current_cycle_end_time: 1758164604
+                      current_cycle_end_time_text: '2025-09-18 11:03:24'
+                      cycle_min_bandwidth_maximum: 5
+                '2':
+                  summary: 成功示例
+                  value:
+                    code: 1
+                    msg: 获取成功!
+                    time: '1757560232'
+                    data:
+                      list:
+                        - id: 11
+                          max_bandwidth: 100
+                          min_bandwidth: 5
+                          start_time: 1757559806
+                          end_time: 1758164604
+                          start_time_text: '2025-09-11 11:03:26'
+                          end_time_text: '2025-09-18 11:03:24'
+                          create_time: 1757559806
+                          update_time: 1757559806
+                          create_time_text: '2025-09-11 11:03:26'
+                          update_time_text: '2025-09-11 11:03:26'
+                      end_time: 1758164604
+                      end_time_text: '2025-09-18 11:03:24'
+                      current_max_bandwidth: 100
+                      current_min_bandwidth: 5
+                      current_cycle_end_time: 1758164604
+                      current_cycle_end_time_text: '2025-09-18 11:03:24'
+                      current_cycle_min_bandwidth_maximum: 5
           headers: {}
           x-apifox-name: 成功
       security: []

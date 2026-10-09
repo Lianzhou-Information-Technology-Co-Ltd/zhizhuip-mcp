@@ -61,7 +61,7 @@ paths:
             type: integer
         - name: token
           in: header
-          description: ''
+          description: 用户api key。<a href="/9518263m0" target="_blank">api key获取方式</a>
           required: true
           example: '{{access_token}}'
           schema:

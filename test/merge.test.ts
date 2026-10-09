@@ -8,6 +8,7 @@ import type { JsonSchema } from '../src/types.js';
 const T = {
   noExpiry: '用户IP子账号管理/动态住宅流量子账号(永久)',
   monthly: '用户IP子账号管理/动态住宅流量子账号(期限)',
+  bandwidth: '用户IP子账号管理/动态住宅不限流量',
   standard: '用户IP子账号管理/静态住宅（非原生）时长子账号',
   native: '用户IP子账号管理/静态住宅（原生）时长子账号',
   ipv6: '用户IP子账号管理/静态住宅（IPV6）时长子账号',
@@ -41,6 +42,13 @@ describe('productOf', () => {
 });
 
 describe('parsePage', () => {
+  it('提取动态带宽文档的固定产品 id', () => {
+    const md = ['```yaml', 'paths:', '  /p:', '    get:', '      parameters:',
+      '        - name: product_type_id', '          in: query', '          description: 产品id，当前产品固定：11',
+      '          schema:', '            type: integer', '```'].join('\n');
+    expect(parsePage('bandwidth', md).fixedValues).toEqual({ product_type_id: 11 });
+  });
+
   it('提取 path、summary、分组、固定值；剔除 access_token 与 header 参数；合并 query 与 body；去掉 HTML', () => {
     const md = [
       '# 标题', '', '```yaml', 'openapi: 3.0.1', 'paths:', '  /externalapi/device/accountList:', '    get:', '      summary: 列表',
@@ -91,6 +99,15 @@ describe('placePages', () => {
 });
 
 describe('mergeGroup', () => {
+  it('动态带宽固定产品 id，子账号编号用字符串', () => {
+    const t = mergeGroup([page('a', '/renew', T.bandwidth, [
+      ['product_type_id', true, 'integer'], ['sub_account_id', true, 'integer'], ['conpon_id', false, 'integer'],
+    ])], ov('renew'));
+    expect(t.fixed).toEqual({ product_type_id: 11 });
+    expect(t.inputSchema.properties).toEqual({ sub_account_id: { type: 'string' }, conpon_id: { type: 'integer' } });
+    expect(t.inputSchema.required).toEqual(['sub_account_id']);
+  });
+
   it('多产品页合并成一个工具：产品参数不进 schema，换成排在最前的必填 product 枚举，并带展开表', () => {
     const t = mergeGroup([
       page('a', '/p', T.standard, [['type', true, 'integer', '此处固定为：1'], ['status', true, 'integer'], ['native', true, 'integer', '此处固定为：0'], ['country', true, 'string', '国家编码']]),
@@ -268,8 +285,8 @@ describe('loadOverrides', () => {
 });
 
 describe('PRODUCTS', () => {
-  it('七个产品，枚举值与设计文档一致，展开参数正确', () => {
-    expect(Object.keys(PRODUCTS)).toEqual(['dynamic-no-expiry', 'dynamic-monthly', 'static-standard', 'static-native', 'static-isp-native', 'static-ipv6', 'datacenter']);
+  it('八个产品，枚举值与设计文档一致，展开参数正确', () => {
+    expect(Object.keys(PRODUCTS)).toEqual(['dynamic-no-expiry', 'dynamic-monthly', 'dynamic-bandwidth', 'static-standard', 'static-native', 'static-isp-native', 'static-ipv6', 'datacenter']);
     expect(PRODUCTS['static-ipv6'].params).toEqual({ type: 1, status: 1, native: 1, version: 6 });
     expect(PRODUCTS['dynamic-no-expiry'].params).toEqual({ type: 0, status: 0, is_month: 0 });
     expect(PRODUCTS['dynamic-monthly'].params).toEqual({ type: 0, status: 0, is_month: 1 });

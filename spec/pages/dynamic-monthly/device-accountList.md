@@ -19,7 +19,7 @@ paths:
       parameters:
         - name: access_token
           in: query
-          description: 用户token。用户登录之后，获取token
+          description: 用户api key。<a href="/9518263m0" target="_blank">api key获取方式</a>
           required: true
           example: '{{access_token}}'
           schema:
@@ -262,6 +262,52 @@ paths:
                   - msg
                   - time
                   - data
+              example:
+                code: 1
+                msg: 获取成功
+                time: '1697164784'
+                data:
+                  total: 1
+                  rows:
+                    - password: '111222'
+                      username: demo-824
+                      id: 824
+                      is_bind: 否
+                      bindUser: demo-824
+                      bindPassword: '111222'
+                      createTime: '2023-10-13 09:38:14'
+                      port: 5001
+                      agree: HTTP
+                      target: demo.demo.com
+                      ip: ''
+                      bill: 0
+                      is_diff: 0
+                      country: ''
+                      countryName: 全球
+                      state: ''
+                      city: ''
+                      type: '0'
+                      status: '0'
+                  baseFlow: 180.31
+                  countryList:
+                    - id: 1
+                      countryName: 全球随机
+                      country: ALL
+                    - id: 1671
+                      conutry: AX
+                      countryName: 奥兰
+                      type_text: ''
+                      status_text: ''
+                    - id: 1672
+                      conutry: AL
+                      countryName: 阿尔巴尼亚
+                      type_text: ''
+                      status_text: ''
+                    - id: 4038
+                      conutry: XK
+                      countryName: 科索沃
+                      type_text: ''
+                      status_text: ''
           headers: {}
           x-apifox-name: 成功
       security: []

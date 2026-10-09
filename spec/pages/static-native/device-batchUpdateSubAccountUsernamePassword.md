@@ -24,7 +24,9 @@ paths:
               type: object
               properties:
                 access_token:
-                  description: 用户token。用户登录之后，获取token
+                  description: >-
+                    用户api key。<a href="/9518263m0" target="_blank">api
+                    key获取方式</a>
                   example: '{{access_token}}'
                   type: string
                 type:
@@ -95,6 +97,11 @@ paths:
                   - msg
                   - time
                   - data
+              example:
+                code: 1
+                msg: 修改成功！
+                time: '2005-03-27 13:48:34'
+                data: null
           headers: {}
           x-apifox-name: 成功
       security: []

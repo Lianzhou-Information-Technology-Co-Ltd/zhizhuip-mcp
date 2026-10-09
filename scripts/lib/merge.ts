@@ -39,6 +39,7 @@ export interface Product { label: string; tag: string; params: ProductParams }
 export const PRODUCTS: Record<string, Product> = {
   'dynamic-no-expiry': { label: '动态住宅流量（永久）', tag: '用户IP子账号管理/动态住宅流量子账号(永久)', params: { type: 0, status: 0, is_month: 0 } },
   'dynamic-monthly': { label: '动态住宅流量（期限）', tag: '用户IP子账号管理/动态住宅流量子账号(期限)', params: { type: 0, status: 0, is_month: 1 } },
+  'dynamic-bandwidth': { label: '动态住宅不限流量（带宽）', tag: '用户IP子账号管理/动态住宅不限流量', params: { product_type_id: 11 } },
   'static-standard': { label: '静态住宅（非原生）', tag: '用户IP子账号管理/静态住宅（非原生）时长子账号', params: { type: 1, status: 1, native: 0 } },
   'static-native': { label: '静态住宅（原生）', tag: '用户IP子账号管理/静态住宅（原生）时长子账号', params: { type: 1, status: 1, native: 1 } },
   'static-isp-native': { label: '静态住宅（运营商原生）', tag: '用户IP子账号管理/静态住宅（运营商原生）时长子账号', params: { type: 1, status: 1, native: 2 } },
@@ -47,11 +48,11 @@ export const PRODUCTS: Record<string, Product> = {
 };
 export const PRODUCT_KEYS = Object.keys(PRODUCTS);
 /** 后端用来标识产品的参数，带产品的页面上一律不进工具 schema，由 product 展开 */
-export const PRODUCT_PARAMS = ['type', 'status', 'native', 'version', 'is_month'];
+export const PRODUCT_PARAMS = ['type', 'status', 'native', 'version', 'is_month', 'product_type_id'];
 /** 无产品的文档站分组 → 目录 */
 const PLAIN_DIRS: Record<string, string> = { 工具管理: 'tool', 用户管理: 'user' };
 /** 子账号 id 类参数：后端经表单收到的本来就是字符串，统一后模型不会因 77 与 "77" 之差被校验拒绝 */
-const ID_KEYS = new Set(['id', 'ids', 'subAccount', 'subAccounts', 'account', 'accounts', 'sub_accounts']);
+const ID_KEYS = new Set(['id', 'ids', 'subAccount', 'subAccounts', 'account', 'accounts', 'sub_accounts', 'sub_account_id']);
 /** 参数名的这几段会写到 Object.prototype 上，把整次生成静默搞坏 */
 const UNSAFE_SEGMENTS = new Set(['__proto__', 'constructor', 'prototype']);
 
@@ -72,7 +73,7 @@ type Any = any;
 
 /** 文档描述里夹着 <a href>、<b> 之类的 HTML，对模型是噪音，统一去掉 */
 const clean = (d: unknown): string => String(d ?? '').replace(/<[^>]+>/g, '').trim();
-const FIXED = /固定(?:类别)?为[：:]?\s*(\d+)/;
+const FIXED = /固定(?:类别)?(?:为)?[：:]?\s*(\d+)/;
 
 function pick(s: Any): JsonSchema {
   const out: JsonSchema = {};

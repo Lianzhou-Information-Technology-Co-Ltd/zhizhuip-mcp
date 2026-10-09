@@ -8,7 +8,7 @@ export interface JsonSchema {
   additionalProperties?: boolean;
 }
 
-/** 后端用 type/status/native/version/is_month 的组合标识产品；一个 product 枚举值展开成这样一组参数 */
+/** 后端用 type/status/native/version/is_month 组合或 product_type_id 标识产品；一个 product 枚举值展开成这样一组参数 */
 export type ProductParams = Record<string, number>;
 
 export interface ToolDef {

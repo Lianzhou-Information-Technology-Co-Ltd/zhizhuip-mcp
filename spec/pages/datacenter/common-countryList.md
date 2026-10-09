@@ -19,7 +19,7 @@ paths:
       parameters:
         - name: access_token
           in: query
-          description: 用户token。用户登录之后，获取token
+          description: 用户api key。<a href="/9518263m0" target="_blank">api key获取方式</a>
           required: true
           example: '{{access_token}}'
           schema:
@@ -106,30 +106,6 @@ paths:
                   - msg
                   - time
                   - data
-              example:
-                code: 1
-                msg: 获取成功!
-                time: '1697680792'
-                data:
-                  countrys:
-                    - id: 11
-                      name: 美国
-                      image: ''
-                      code: US
-                      type_text: ''
-                      status_text: ''
-                    - id: 22
-                      name: 香港
-                      image: ''
-                      code: HK
-                      type_text: ''
-                      status_text: ''
-                    - id: 33
-                      name: 英国
-                      image: ''
-                      code: GB
-                      type_text: ''
-                      status_text: ''
           headers: {}
           x-apifox-name: 成功
       security: []

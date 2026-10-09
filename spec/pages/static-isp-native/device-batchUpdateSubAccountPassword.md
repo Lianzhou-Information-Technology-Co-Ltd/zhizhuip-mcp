@@ -24,7 +24,9 @@ paths:
               type: object
               properties:
                 access_token:
-                  description: 用户token。用户登录之后，获取token
+                  description: >-
+                    用户api key。<a href="/9518263m0" target="_blank">api
+                    key获取方式</a>
                   example: '{{access_token}}'
                   type: string
                 type:

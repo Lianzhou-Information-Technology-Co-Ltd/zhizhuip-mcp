@@ -19,7 +19,7 @@ paths:
       parameters:
         - name: access_token
           in: query
-          description: 用户token。用户登录之后，获取token
+          description: 用户api key。<a href="/9518263m0" target="_blank">api key获取方式</a>
           required: true
           example: '{{access_token}}'
           schema:
@@ -259,40 +259,6 @@ paths:
                   - msg
                   - time
                   - data
-              example:
-                code: 1
-                msg: 获取成功
-                time: '1697514426'
-                data:
-                  total: 106
-                  rows:
-                    - id: '110'
-                      is_diff: 0
-                      agree: SOCKS5
-                      country: US
-                      ip: 127.0.0.1
-                      target: demo.demo.com
-                      port: 5001
-                      username: demo-110
-                      password: demo
-                      is_bind: 否
-                      remark: ''
-                      bindUser: demo-110
-                      bindPassword: demo
-                      countdown: 30.0天
-                      expiresIn: 1723514861
-                      createtime: '2023-10-17 11:35:09'
-                      state: ''
-                      city: ''
-                      bill: 0
-                      countryName: 美国
-                      status: 1
-                      use_bill: '0.00'
-                      is_renew: '0'
-                  baseflow: 0
-                  countryList:
-                    - country: US
-                      countryName: 美国
           headers: {}
           x-apifox-name: 成功
       security: []

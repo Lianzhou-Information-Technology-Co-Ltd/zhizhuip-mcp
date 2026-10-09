@@ -11,16 +11,17 @@ const byName = (n: string) => {
 };
 const DYNAMIC = ['dynamic-no-expiry', 'dynamic-monthly'];
 const STATIC3 = ['static-standard', 'static-native', 'static-isp-native'];
-const PRODUCT_PARAMS = ['type', 'status', 'native', 'version', 'is_month'];
+const PRODUCT_PARAMS = ['type', 'status', 'native', 'version', 'is_month', 'product_type_id'];
 
 describe('spec/tools.json', () => {
-  it('恰好 40 个工具，21 个只读，名字与设计文档一致', () => {
+  it('恰好 44 个工具，21 个只读，名字与设计文档一致', () => {
     expect(tools.map(t => t.name)).toEqual([
       'bandwidth_detail', 'bandwidth_package_list', 'bandwidth_trend',
       'city_list', 'country_list', 'coupon_list', 'flow_package_list', 'ip_booking', 'ip_range_status',
       'main_account_flow', 'main_account_switch_token', 'official_price',
-      'order_bandwidth_upgrade', 'order_buy_dynamic', 'order_buy_ipv6', 'order_buy_test_ip', 'order_buy_time_ip',
-      'order_refund_apply', 'order_renew', 'order_renew_ipv6', 'provider_list', 'state_list',
+      'order_bandwidth_upgrade', 'order_buy_dynamic', 'order_buy_dynamic_bandwidth', 'order_buy_ipv6', 'order_buy_test_ip', 'order_buy_time_ip',
+      'order_dynamic_bandwidth_upgrade', 'order_refund_apply', 'order_refund_dynamic_bandwidth_apply',
+      'order_renew', 'order_renew_dynamic_bandwidth', 'order_renew_ipv6', 'provider_list', 'state_list',
       'sub_account_add', 'sub_account_delete', 'sub_account_delete_batch', 'sub_account_flow',
       'sub_account_limit_flow', 'sub_account_limit_flow_batch', 'sub_account_list', 'sub_account_set_credentials',
       'sub_account_set_limit_flow', 'sub_account_set_limit_flow_batch', 'sub_account_set_password_batch',
@@ -34,8 +35,8 @@ describe('spec/tools.json', () => {
   it('只读 GET、其余 POST；删除与扣费带 destructive，描述首句写明后果', () => {
     for (const t of tools) expect(t.method, t.name).toBe(t.readOnly ? 'GET' : 'POST');
     expect(tools.filter(t => t.destructive).map(t => t.name)).toEqual([
-      'order_bandwidth_upgrade', 'order_buy_dynamic', 'order_buy_ipv6', 'order_buy_test_ip', 'order_buy_time_ip',
-      'order_renew', 'order_renew_ipv6', 'sub_account_delete', 'sub_account_delete_batch',
+      'order_bandwidth_upgrade', 'order_buy_dynamic', 'order_buy_dynamic_bandwidth', 'order_buy_ipv6', 'order_buy_test_ip', 'order_buy_time_ip',
+      'order_dynamic_bandwidth_upgrade', 'order_renew', 'order_renew_dynamic_bandwidth', 'order_renew_ipv6', 'sub_account_delete', 'sub_account_delete_batch',
     ]);
     for (const t of tools.filter(x => x.destructive)) expect(t.description, t.name).toMatch(/^(会从账户余额扣费|不可恢复|会消耗)/);
     for (const t of tools.filter(x => !x.destructive)) expect(t.description, t.name).not.toMatch(/^(会从账户余额扣费|不可恢复)/);
@@ -68,7 +69,7 @@ describe('spec/tools.json', () => {
     for (const t of tools) if (t.products) expect(t.fixed, t.name).toBeUndefined();
   });
 
-  it('购买接口按产品拆成两个工具', () => {
+  it('购买接口按产品拆成三个工具', () => {
     const dyn = byName('order_buy_dynamic');
     expect(dyn.inputSchema.properties.product.enum).toEqual(DYNAMIC);
     expect(Object.keys(dyn.inputSchema.properties).sort()).toEqual(['bill_timelen', 'conpon_id', 'num', 'product']);
@@ -91,7 +92,7 @@ describe('spec/tools.json', () => {
 
   it('括号参数转成结构化参数', () => {
     const cred = byName('sub_account_set_credentials');
-    expect(cred.inputSchema.properties.product.enum).toEqual(PRODUCT_KEYS);
+    expect(cred.inputSchema.properties.product.enum).toEqual(PRODUCT_KEYS.filter(k => k !== 'dynamic-bandwidth'));
     expect(cred.inputSchema.properties.content).toMatchObject({ type: 'array', items: { type: 'object', required: ['id', 'customUsername', 'customPassword'] } });
     expect(cred.inputSchema.properties.content.items?.properties?.id.type).toBe('string');
     expect(cred.inputSchema.required).toEqual(['product', 'content']);
@@ -181,7 +182,7 @@ describe('spec/tools.json', () => {
   });
 
   it('子账号 id 类参数一律 string，数组元素与嵌套对象里的也是', () => {
-    const ID_KEYS = ['id', 'ids', 'subAccount', 'subAccounts', 'account', 'accounts', 'sub_accounts'];
+    const ID_KEYS = ['id', 'ids', 'subAccount', 'subAccounts', 'account', 'accounts', 'sub_accounts', 'sub_account_id'];
     const check = (name: string, props: Record<string, { type?: string; items?: { type?: string; properties?: Record<string, { type?: string }> } }>) => {
       for (const [k, v] of Object.entries(props)) {
         if (!ID_KEYS.includes(k)) continue;
@@ -267,8 +268,39 @@ describe('spec/tools.json', () => {
 
   it('spec/pages 的目录与文件名符合 placePages 规则（sync-docs 按同一规则落盘，不要手动改名）', () => {
     const pages = loadPages();
-    expect(pages).toHaveLength(110);
+    expect(pages).toHaveLength(115);
     for (const [file, p] of placePages(pages)) expect(file, p.id).toBe(`${p.id}.md`);
+  });
+
+  it('动态带宽独立写工具固定 product_type_id=11，不混入旧产品参数', () => {
+    const names = ['order_buy_dynamic_bandwidth', 'order_renew_dynamic_bandwidth', 'order_dynamic_bandwidth_upgrade', 'order_refund_dynamic_bandwidth_apply'];
+    for (const name of names) {
+      const t = byName(name);
+      expect(t.fixed, name).toEqual({ product_type_id: 11 });
+      expect(t.readOnly, name).toBe(false);
+      expect(t.inputSchema.properties.product, name).toBeUndefined();
+      expect(t.inputSchema.properties.content, name).toBeUndefined();
+      expect(t.inputSchema.properties['conpon_id '], name).toBeUndefined();
+    }
+    expect(byName('sub_account_list').products?.['dynamic-bandwidth']).toEqual({ product_type_id: 11 });
+    const buy = byName(names[0]);
+    expect(buy.inputSchema.required).toEqual(['country', 'timelen', 'bandwidth_num']);
+    expect(buy.inputSchema.properties.country.enum).toEqual(['US', 'DE', 'SG']);
+    expect(buy.inputSchema.properties.timelen.enum).toEqual([1, 2, 3]);
+    expect(buy.inputSchema.properties.conpon_id.type).toBe('integer');
+    expect(byName(names[1]).inputSchema.required).toEqual(['sub_account_id', 'timelen']);
+    expect(byName(names[1]).inputSchema.properties.timelen.enum).toEqual([1, 2, 3]);
+    expect(byName(names[2]).inputSchema.required).toEqual(['sub_account_id', 'bandwidth_num']);
+    expect(byName(names[3]).inputSchema.required).toEqual(['sub_account_id', 'remark']);
+    expect(byName(names[3]).destructive).toBe(false);
+    for (const name of names.slice(1)) {
+      const id = byName(name).inputSchema.properties.sub_account_id;
+      expect(id.type).toBe('string');
+      expect(id.description).toContain('rows[].sub_account');
+    }
+    for (const t of tools.filter(t => t.products && t.name !== 'sub_account_list')) {
+      expect(t.products?.['dynamic-bandwidth'], t.name).toBeUndefined();
+    }
   });
 
   it('完整快照', () => {

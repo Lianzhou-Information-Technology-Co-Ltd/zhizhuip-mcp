@@ -19,7 +19,7 @@ paths:
       parameters:
         - name: access_token
           in: query
-          description: 用户token。用户登录之后，获取token
+          description: 用户api key。<a href="/9518263m0" target="_blank">api key获取方式</a>
           required: true
           example: '{{access_token}}'
           schema:
@@ -92,18 +92,6 @@ paths:
                   - msg
                   - time
                   - data
-              example:
-                code: 1
-                msg: 子账号流量设置获取成功!
-                time: '1752213565'
-                data:
-                  account: '560'
-                  limit_flow: 2
-                  use_flow: 0.03
-                  cycle: '1'
-                  disabled: '0'
-                  createtime: '2025-07-11 13:24:16'
-                  updatetime: '2025-07-11 13:27:10'
           headers: {}
           x-apifox-name: 成功
       security: []

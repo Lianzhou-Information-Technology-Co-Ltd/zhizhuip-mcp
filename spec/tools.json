@@ -606,7 +606,7 @@
   {
     "name": "official_price",
     "title": "官网价格",
-    "description": "查询各产品的官网标价。后端缓存 5 分钟。",
+    "description": "查询流量与时长 IP 产品的官网标价，不含动态不限流量（带宽）价格。后端缓存 5 分钟。",
     "readOnly": true,
     "destructive": false,
     "method": "GET",
@@ -728,6 +728,63 @@
       "required": [
         "product",
         "num"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "order_buy_dynamic_bandwidth",
+    "title": "购买动态不限流量带宽",
+    "description": "会从账户余额扣费。新购一个动态住宅不限流量子账号，按入口国家、带宽和时长计费，最低 10 Mbps；账号须先完成邮箱或手机验证以及实名验证。当前价格工具不含此产品，费用请先在网站核实并向用户确认。",
+    "readOnly": false,
+    "destructive": true,
+    "method": "POST",
+    "path": "/externalapi/product_order/createProductOrder",
+    "fixed": {
+      "product_type_id": 11
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string",
+          "description": "入口国家编码，US=美国、DE=德国、SG=新加坡。国家用 ISO 3166-1 二字码，如 US",
+          "enum": [
+            "US",
+            "DE",
+            "SG"
+          ]
+        },
+        "timelen": {
+          "type": "integer",
+          "description": "购买时长：1=30天，2=90天，3=180天",
+          "enum": [
+            1,
+            2,
+            3
+          ]
+        },
+        "bandwidth_num": {
+          "type": "integer",
+          "description": "购买带宽，单位 Mbps，整数且至少 10"
+        },
+        "use_random_username": {
+          "type": "integer",
+          "description": "是否随机生成自定义账密：0=默认系统账密，1=随机生成",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "conpon_id": {
+          "type": "integer",
+          "description": "可选优惠券 id，取用户在网站确认的适用券；自定义价不能叠加优惠券"
+        }
+      },
+      "required": [
+        "country",
+        "timelen",
+        "bandwidth_num"
       ],
       "additionalProperties": false
     }
@@ -1044,6 +1101,40 @@
     }
   },
   {
+    "name": "order_dynamic_bandwidth_upgrade",
+    "title": "升级动态不限流量带宽",
+    "description": "会从账户余额扣费。升级一个动态住宅不限流量子账号的带宽，bandwidth_num 为目标总带宽；先用 sub_account_list 查询 dynamic-bandwidth，确认 can_upgrade=true。当前价格工具不含此产品，费用请先在网站核实并向用户确认。",
+    "readOnly": false,
+    "destructive": true,
+    "method": "POST",
+    "path": "/externalapi/product_order/dynamicBandwidthUpgradeOrder",
+    "fixed": {
+      "product_type_id": 11
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "sub_account_id": {
+          "type": "string",
+          "description": "子账号编号，取 sub_account_list 的 rows[].sub_account，不是本地记录 id"
+        },
+        "bandwidth_num": {
+          "type": "integer",
+          "description": "升级后的目标总带宽，单位 Mbps，整数且至少 10，必须大于当前带宽"
+        },
+        "conpon_id": {
+          "type": "integer",
+          "description": "可选优惠券 id，取用户在网站确认的适用券；自定义价不能叠加优惠券"
+        }
+      },
+      "required": [
+        "sub_account_id",
+        "bandwidth_num"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "order_refund_apply",
     "title": "申请退单",
     "description": "为静态住宅的一个子账号申请退单，提交后由人工审核，不会立即退款。后端限制：只能在下单后 1 天内申请；已续费、有进行中的带宽升级订单、消费记录已开票的子账号不能退；同一子账号重复申请会被拒。",
@@ -1093,6 +1184,36 @@
         "product",
         "remark",
         "id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "order_refund_dynamic_bandwidth_apply",
+    "title": "申请动态不限流量带宽退单",
+    "description": "提交动态住宅不限流量子账号的退单申请，等待平台审核，不立即退款；审核前账号仍可用。审核通过后按剩余未使用天数退款到余额，不足一天按一天使用计费；赠送账号、已退单或已删除账号不能退，重复申请会被拒。",
+    "readOnly": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/externalapi/product_order/createOrderBack",
+    "fixed": {
+      "product_type_id": 11
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "sub_account_id": {
+          "type": "string",
+          "description": "子账号编号，取 sub_account_list 的 rows[].sub_account，不是本地记录 id"
+        },
+        "remark": {
+          "type": "string",
+          "description": "退单原因"
+        }
+      },
+      "required": [
+        "sub_account_id",
+        "remark"
       ],
       "additionalProperties": false
     }
@@ -1193,6 +1314,45 @@
       "required": [
         "product",
         "content"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "order_renew_dynamic_bandwidth",
+    "title": "续费动态不限流量带宽",
+    "description": "会从账户余额扣费。续费一个动态住宅不限流量子账号，保留当前带宽；先用 sub_account_list 查询 dynamic-bandwidth，确认 can_renew=true。当前价格工具不含此产品，费用请先在网站核实并向用户确认。",
+    "readOnly": false,
+    "destructive": true,
+    "method": "POST",
+    "path": "/externalapi/set_meal/renewOrder",
+    "fixed": {
+      "product_type_id": 11
+    },
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "sub_account_id": {
+          "type": "string",
+          "description": "子账号编号，取 sub_account_list 的 rows[].sub_account，不是本地记录 id"
+        },
+        "timelen": {
+          "type": "integer",
+          "description": "续费时长：1=30天，2=90天，3=180天",
+          "enum": [
+            1,
+            2,
+            3
+          ]
+        },
+        "conpon_id": {
+          "type": "integer",
+          "description": "可选优惠券 id，取用户在网站确认的适用券；自定义价不能叠加优惠券"
+        }
+      },
+      "required": [
+        "sub_account_id",
+        "timelen"
       ],
       "additionalProperties": false
     }
@@ -1680,7 +1840,7 @@
   {
     "name": "sub_account_list",
     "title": "子账号列表",
-    "description": "分页查询某产品的子账号，返回子账号 id、账号密码、端口、国家、到期时间等；后面所有按子账号操作的工具都从这里取 id。",
+    "description": "分页查询某产品的子账号、账密、端口与到期时间。动态不限流量（带宽）仅支持分页，后续操作取 rows[].sub_account（不是 id），并检查 can_renew、can_upgrade、refunding；其他产品取 id。",
     "readOnly": true,
     "destructive": false,
     "method": "GET",
@@ -1695,6 +1855,9 @@
         "type": 0,
         "status": 0,
         "is_month": 1
+      },
+      "dynamic-bandwidth": {
+        "product_type_id": 11
       },
       "static-standard": {
         "type": 1,
@@ -1730,21 +1893,22 @@
           "enum": [
             "dynamic-no-expiry",
             "dynamic-monthly",
+            "dynamic-bandwidth",
             "static-standard",
             "static-native",
             "static-isp-native",
             "static-ipv6",
             "datacenter"
           ],
-          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限），static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生），static-ipv6=静态住宅（IPv6），datacenter=数据中心"
+          "description": "产品：dynamic-no-expiry=动态住宅流量（永久），dynamic-monthly=动态住宅流量（期限），dynamic-bandwidth=动态住宅不限流量（带宽），static-standard=静态住宅（非原生），static-native=静态住宅（原生），static-isp-native=静态住宅（运营商原生），static-ipv6=静态住宅（IPv6），datacenter=数据中心"
         },
         "page": {
           "type": "integer",
-          "description": "当前页数"
+          "description": "页码，从 1 起"
         },
         "pagesize": {
           "type": "integer",
-          "description": "每页显示数量。每页最大100条数据"
+          "description": "每页数量，最大 100"
         },
         "customUsername": {
           "type": "string",
@@ -1756,11 +1920,11 @@
         },
         "remark": {
           "type": "string",
-          "description": "按备注模糊搜索（动态产品用）"
+          "description": "按备注模糊搜索（动态流量产品用）"
         },
         "countryList": {
           "type": "string",
-          "description": "国家编码，多个以英文逗号分隔（动态产品用）"
+          "description": "国家编码，多个以英文逗号分隔（动态流量产品用）"
         },
         "search_type": {
           "type": "integer",
@@ -2323,7 +2487,7 @@
   {
     "name": "user_price",
     "title": "用户价格",
-    "description": "查询当前账号各产品的实际价格，含管理员给该账号设置的自定义价；下单前用它估算费用。",
+    "description": "查询当前账号的流量与时长 IP 产品价格，含管理员设置的自定义价；不含动态不限流量（带宽）价格。",
     "readOnly": true,
     "destructive": false,
     "method": "GET",

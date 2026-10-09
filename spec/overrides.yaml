@@ -1,5 +1,5 @@
 # 路径 → 工具名、中文描述、标注、产品列表、拆分与参数修正。人工维护。
-# 产品参数（type/status/native/version/is_month）不用在这里写，生成器按分组换成 product 枚举。
+# 产品参数（type/status/native/version/is_month/product_type_id）不用在这里写，生成器按分组换成 product 枚举。
 # "文档缺陷兜底" 条目在文档站修好后删除。
 ignore:
   - /externalapi/tool/deleteSubAccountWhiteList # 清空子账号白名单，本期不暴露
@@ -22,12 +22,12 @@ tools:
   /externalapi/tool/getUserCustomPriceInfo:
     name: user_price
     title: 用户价格
-    description: 查询当前账号各产品的实际价格，含管理员给该账号设置的自定义价；下单前用它估算费用。
+    description: 查询当前账号的流量与时长 IP 产品价格，含管理员设置的自定义价；不含动态不限流量（带宽）价格。
     readOnly: true
   /externalapi/tool/getOriginCustomPriceInfo:
     name: official_price
     title: 官网价格
-    description: 查询各产品的官网标价。后端缓存 5 分钟。
+    description: 查询流量与时长 IP 产品的官网标价，不含动态不限流量（带宽）价格。后端缓存 5 分钟。
     readOnly: true
   /externalapi/conpons/conponList:
     name: coupon_list
@@ -68,12 +68,14 @@ tools:
   /externalapi/device/accountList:
     name: sub_account_list
     title: 子账号列表
-    description: 分页查询某产品的子账号，返回子账号 id、账号密码、端口、国家、到期时间等；后面所有按子账号操作的工具都从这里取 id。
+    description: 分页查询某产品的子账号、账密、端口与到期时间。动态不限流量（带宽）仅支持分页，后续操作取 rows[].sub_account（不是 id），并检查 can_renew、can_upgrade、refunding；其他产品取 id。
     readOnly: true
     params:
+      page: { required: true, description: 页码，从 1 起 } # 新产品分页可选，保持现有工具的分页必填契约
+      pagesize: { required: true, description: 每页数量，最大 100 }
       ids: { description: 子账号 id 集合，多个以英文逗号连接 }
-      remark: { description: 按备注模糊搜索（动态产品用） }
-      countryList: { description: 国家编码，多个以英文逗号分隔（动态产品用） }
+      remark: { description: 按备注模糊搜索（动态流量产品用） }
+      countryList: { description: 国家编码，多个以英文逗号分隔（动态流量产品用） }
       customUsername: { description: 按自定义账号搜索（时长类产品用） }
       search_type: { enum: [0, 1, 2], description: 搜索类型：0=自定义账密，1=子账号 IP，2=备注；搜索值放 searchArr（时长类产品用） }
       searchArr: { description: 搜索值列表（时长类产品用）：search_type=0 时填自定义账号名，search_type=1 时填出口 IP，search_type=2 时只取第一项作为备注关键字 }
@@ -255,6 +257,17 @@ tools:
           bandwidth_num: { description: 购买时选定的增值带宽，可选值和价格用 bandwidth_package_list 查；数据中心没有带宽加购，不要传 }
           use_ip_port: { enum: [0, 1], description: IP 端口连接状态：0=关闭，1=开启 }
           use_random_username: { enum: [0, 1], description: 是否使用随机账号密码：0=否，1=是 }
+      - name: order_buy_dynamic_bandwidth
+        title: 购买动态不限流量带宽
+        description: 会从账户余额扣费。新购一个动态住宅不限流量子账号，按入口国家、带宽和时长计费，最低 10 Mbps；账号须先完成邮箱或手机验证以及实名验证。当前价格工具不含此产品，费用请先在网站核实并向用户确认。
+        destructive: true
+        products: [dynamic-bandwidth]
+        params:
+          country: { enum: [US, DE, SG], description: 入口国家编码，US=美国、DE=德国、SG=新加坡 }
+          timelen: { enum: [1, 2, 3], description: 购买时长：1=30天，2=90天，3=180天 }
+          bandwidth_num: { description: 购买带宽，单位 Mbps，整数且至少 10 }
+          use_random_username: { enum: [0, 1], description: 是否随机生成自定义账密：0=默认系统账密，1=随机生成 }
+          conpon_id: { description: 可选优惠券 id，取用户在网站确认的适用券；自定义价不能叠加优惠券 }
   /externalapi/product_order/createIpv6Order:
     name: order_buy_ipv6
     title: 购买 IPv6 时长 IP
@@ -278,18 +291,29 @@ tools:
       city: { description: 城市名称，取 city_list 返回的名称；不传随机 }
       use_random_username: { enum: [0, 1], description: 是否使用随机账号密码：0=否，1=是 }
   /externalapi/set_meal/renewOrder:
-    name: order_renew
-    title: 续费时长 IP
-    description: 会从账户余额扣费。续费静态住宅或数据中心的时长 IP 子账号，content 按国家分组，每组写子账号 id 列表、国家、续费时长；一次最多 200 个子账号。
-    destructive: true
-    params:
-      content: { description: 续费内容，按国家分组，每组写 ids、country、timelen，可选 renew_with_bandwidth }
-      "content[0][ids]": { description: 该组要续费的子账号 id 列表 }
-      "content[0][ids][0]": { description: 续费的子账号 id }
-      "content[0][country]": { description: 这组子账号的国家编码，传 sub_account_list 返回的 country 即可；后端以子账号库里记录的国家为准 }
-      "content[0][timelen]": { enum: [0, 1, 2, 3, 4], description: 续费时长：0=7天，1=30天，2=90天，3=180天，4=360天 }
-      "content[0][renew_with_bandwidth]": { enum: [0, 1], description: 是否连同带宽一起续费：0=只续子账号，1=子账号和带宽一起续 }
-      conpon_id: { description: 优惠券 id，用 coupon_list 查 }
+    split:
+      - name: order_renew
+        title: 续费时长 IP
+        description: 会从账户余额扣费。续费静态住宅或数据中心的时长 IP 子账号，content 按国家分组，每组写子账号 id 列表、国家、续费时长；一次最多 200 个子账号。
+        destructive: true
+        params:
+          content: { description: 续费内容，按国家分组，每组写 ids、country、timelen，可选 renew_with_bandwidth }
+          "content[0][ids]": { description: 该组要续费的子账号 id 列表 }
+          "content[0][ids][0]": { description: 续费的子账号 id }
+          "content[0][country]": { description: 这组子账号的国家编码，传 sub_account_list 返回的 country 即可；后端以子账号库里记录的国家为准 }
+          "content[0][timelen]": { enum: [0, 1, 2, 3, 4], description: 续费时长：0=7天，1=30天，2=90天，3=180天，4=360天 }
+          "content[0][renew_with_bandwidth]": { enum: [0, 1], description: 是否连同带宽一起续费：0=只续子账号，1=子账号和带宽一起续 }
+          conpon_id: { description: 优惠券 id，用 coupon_list 查 }
+        products: [static-standard, static-native, static-isp-native, datacenter]
+      - name: order_renew_dynamic_bandwidth
+        title: 续费动态不限流量带宽
+        description: 会从账户余额扣费。续费一个动态住宅不限流量子账号，保留当前带宽；先用 sub_account_list 查询 dynamic-bandwidth，确认 can_renew=true。当前价格工具不含此产品，费用请先在网站核实并向用户确认。
+        destructive: true
+        products: [dynamic-bandwidth]
+        params:
+          sub_account_id: { description: "子账号编号，取 sub_account_list 的 rows[].sub_account，不是本地记录 id" } # 文档缺陷兜底：后端按 sub_account 定位，不能传本地 id
+          timelen: { enum: [1, 2, 3], description: 续费时长：1=30天，2=90天，3=180天 }
+          conpon_id: { description: 可选优惠券 id，取用户在网站确认的适用券；自定义价不能叠加优惠券 }
   /externalapi/set_meal/renewOrderIpv6:
     name: order_renew_ipv6
     title: 续费 IPv6 时长 IP
@@ -311,12 +335,21 @@ tools:
       "sub_accounts[0]": { description: 子账号 id }
       bandwidth_num: { description: 升级后的目标带宽，必须大于子账号当前带宽，可选值用 bandwidth_package_list 查 }
   /externalapi/product_order/createOrderBack:
-    name: order_refund_apply
-    title: 申请退单
-    description: 为静态住宅的一个子账号申请退单，提交后由人工审核，不会立即退款。后端限制：只能在下单后 1 天内申请；已续费、有进行中的带宽升级订单、消费记录已开票的子账号不能退；同一子账号重复申请会被拒。
-    params:
-      remark: { description: 退单原因 }
-      id: { description: 子账号 id }
+    split:
+      - name: order_refund_apply
+        title: 申请退单
+        description: 为静态住宅的一个子账号申请退单，提交后由人工审核，不会立即退款。后端限制：只能在下单后 1 天内申请；已续费、有进行中的带宽升级订单、消费记录已开票的子账号不能退；同一子账号重复申请会被拒。
+        params:
+          remark: { description: 退单原因 }
+          id: { description: 子账号 id }
+        products: [static-standard, static-native, static-isp-native]
+      - name: order_refund_dynamic_bandwidth_apply
+        title: 申请动态不限流量带宽退单
+        description: 提交动态住宅不限流量子账号的退单申请，等待平台审核，不立即退款；审核前账号仍可用。审核通过后按剩余未使用天数退款到余额，不足一天按一天使用计费；赠送账号、已退单或已删除账号不能退，重复申请会被拒。
+        products: [dynamic-bandwidth]
+        params:
+          sub_account_id: { description: "子账号编号，取 sub_account_list 的 rows[].sub_account，不是本地记录 id" } # 文档缺陷兜底：后端按 sub_account 定位，不能传本地 id
+          remark: { description: 退单原因 }
   /externalapi/product_order/bookingIPArea:
     name: ip_booking
     title: 预约 IP
@@ -324,3 +357,12 @@ tools:
     params:
       country: { description: 预约的国家名称（填国家名，不是编码），如 美国 }
       num: { description: 预约的 IP 数量，1 到 1000 }
+  /externalapi/product_order/dynamicBandwidthUpgradeOrder:
+    name: order_dynamic_bandwidth_upgrade
+    title: 升级动态不限流量带宽
+    description: 会从账户余额扣费。升级一个动态住宅不限流量子账号的带宽，bandwidth_num 为目标总带宽；先用 sub_account_list 查询 dynamic-bandwidth，确认 can_upgrade=true。当前价格工具不含此产品，费用请先在网站核实并向用户确认。
+    destructive: true
+    params:
+      sub_account_id: { description: "子账号编号，取 sub_account_list 的 rows[].sub_account，不是本地记录 id" } # 文档缺陷兜底：后端按 sub_account 定位，不能传本地 id
+      bandwidth_num: { description: 升级后的目标总带宽，单位 Mbps，整数且至少 10，必须大于当前带宽 }
+      conpon_id: { description: 可选优惠券 id，取用户在网站确认的适用券；自定义价不能叠加优惠券 }

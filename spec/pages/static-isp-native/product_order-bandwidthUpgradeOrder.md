@@ -19,7 +19,7 @@ paths:
       parameters:
         - name: access_token
           in: query
-          description: ''
+          description: 用户api key。<a href="/9518263m0" target="_blank">api key获取方式</a>
           required: false
           example: '{{access_token}}'
           schema:

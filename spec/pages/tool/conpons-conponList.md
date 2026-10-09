@@ -23,7 +23,7 @@ paths:
       parameters:
         - name: access_token
           in: query
-          description: 用户token。用户登录之后，获取token
+          description: 用户api key。<a href="/9518263m0" target="_blank">api key获取方式</a>
           required: true
           example: '{{access_token}}'
           schema:
@@ -96,15 +96,6 @@ paths:
                   - msg
                   - time
                   - data
-              example:
-                code: 1
-                msg: 获取成功!
-                time: '1697785054'
-                data:
-                  - conpon_id: 11
-                    con_name: 优惠码 - 20231020
-                    time_ip_remaining: 98
-                    flow_remaining: 0
           headers: {}
           x-apifox-name: 成功
       security: []

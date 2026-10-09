@@ -2,7 +2,7 @@
 
 蜘蛛 IP（zhizhuip.com）对外 API 的 MCP 服务器。让 Claude Code、Claude Desktop 等 MCP 客户端可以查询子账号、流量、价格、库存，并在你确认后下单、续费、改配置。
 
-默认暴露全部 40 个工具，含下单扣费、续费、删除子账号；加 `--readonly` 只暴露 21 个只读工具，装了不会产生任何费用。19 个写操作执行前都会先向你确认（见下文"写操作确认"）：支持弹窗的客户端由你点确认，其它客户端由助手转述后再向你确认；不需要写操作的人直接配 `--readonly`。
+默认暴露全部 44 个工具，含下单扣费、续费、删除子账号；加 `--readonly` 只暴露 21 个只读工具，装了不会产生任何费用。23 个写操作执行前都会先向你确认（见下文"写操作确认"）：支持弹窗的客户端由你点确认，其它客户端由助手转述后再向你确认；不需要写操作的人直接配 `--readonly`。
 
 业务逻辑、参数校验、鉴权、扣费全部在后端完成，本项目只是一个 HTTP 客户端。
 
@@ -94,7 +94,7 @@ setup 的输出按客户端分段：Claude Code 与 Codex CLI 各一条可直接
 
 ## 写操作确认
 
-新增、修改、下单、续费、升级、退单、预约、删除这 19 个工具执行前都会先向你确认：
+新增、修改、下单、续费、升级、退单、预约、删除这 23 个工具执行前都会先向你确认：
 
 - 客户端支持 MCP 的弹窗确认（elicitation）时，会弹出操作预览（工具、参数、产品名），你点确认后才请求后端。弹窗没得到确认（你点了拒绝或关掉，或者客户端声明支持却没显示弹窗）都会退到下面的确认码方式，由助手在对话里再向你确认一次，你不同意就不执行。
 - 客户端不支持时，第一次调用只返回预览和一个 5 分钟有效、只能用一次的确认码，AI 要把预览告诉你，你同意后它再带确认码用同样参数调一次。
@@ -112,7 +112,7 @@ npx @modelcontextprotocol/inspector -e ZHIZHUIP_TOKEN=你的token -- node <安�
 
 ## 工具清单
 
-产品用 `product` 参数指定：`dynamic-no-expiry` 动态住宅流量（永久）、`dynamic-monthly` 动态住宅流量（期限）、`static-standard` 静态住宅（非原生）、`static-native` 静态住宅（原生）、`static-isp-native` 静态住宅（运营商原生）、`static-ipv6` 静态住宅（IPv6）、`datacenter` 数据中心。每个工具只列它支持的产品；只对应一种产品的工具没有这个参数。国家一律用 ISO 3166-1 二字码（如 `US`），只有预约 IP 填国家名称。
+产品用 `product` 参数指定：`dynamic-no-expiry` 动态住宅流量（永久）、`dynamic-monthly` 动态住宅流量（期限）、`dynamic-bandwidth` 动态住宅不限流量（带宽）、`static-standard` 静态住宅（非原生）、`static-native` 静态住宅（原生）、`static-isp-native` 静态住宅（运营商原生）、`static-ipv6` 静态住宅（IPv6）、`datacenter` 数据中心。每个工具只列它支持的产品；只对应一种产品的工具没有这个参数。国家一律用 ISO 3166-1 二字码（如 `US`），只有预约 IP 填国家名称。
 
 只读（`--readonly` 模式暴露的全部工具）：
 
@@ -142,6 +142,10 @@ npx @modelcontextprotocol/inspector -e ZHIZHUIP_TOKEN=你的token -- node <安�
 | sub_account_toggle_port | 批量开关端口连接 |
 | sub_account_set_limit_flow / sub_account_set_limit_flow_batch | 设置流量上限 |
 | sub_account_delete / sub_account_delete_batch | 删除子账号，不可恢复 |
+| order_buy_dynamic_bandwidth | 新购动态不限流量带宽，扣费 |
+| order_renew_dynamic_bandwidth | 续费动态不限流量带宽，扣费 |
+| order_dynamic_bandwidth_upgrade | 升级动态不限流量带宽，扣费 |
+| order_refund_dynamic_bandwidth_apply | 提交动态不限流量退单申请，平台审核后退款 |
 | order_buy_dynamic | 购买动态住宅流量，扣费 |
 | order_buy_time_ip / order_buy_ipv6 | 购买时长 IP、IPv6 时长 IP，扣费 |
 | order_buy_test_ip | 购买测试 IP，扣费并占用测试额度 |
@@ -149,6 +153,26 @@ npx @modelcontextprotocol/inspector -e ZHIZHUIP_TOKEN=你的token -- node <安�
 | order_bandwidth_upgrade | 带宽升级，扣费 |
 | order_refund_apply | 申请退单 |
 | ip_booking | 预约 IP，不扣费 |
+
+### 动态不限流量（带宽）
+
+查询使用 `sub_account_list`，参数示例：
+
+```json
+{ "product": "dynamic-bandwidth", "page": 1, "pagesize": 10 }
+```
+
+新购使用 `order_buy_dynamic_bandwidth`：
+
+```json
+{ "country": "US", "timelen": 1, "bandwidth_num": 10 }
+```
+
+新产品的四个写工具不需要 `product`，自动携带 `product_type_id=11`。购买一次创建一个子账号；入口国家为 US、DE、SG，带宽单位 Mbps、最低 10，时长档 1/2/3 分别为 30/90/180 天。
+
+续费、升级、退单的 `sub_account_id` 必须取列表的 `rows[].sub_account` 并转成字符串（例如 `"10"`），不要使用同一行的本地记录 `id`。续费前检查 `can_renew`，升级前检查 `can_upgrade`；退单申请等待平台审核，不会立即退款。
+
+目前 `user_price`、`official_price` 不含动态带宽报价。费用和适用优惠券请先在网站核实，再确认执行；扣款以返回的 `real_price` 为准。动态带宽列表只支持分页，其他产品的搜索、流量限制和改密工具不适用于它。
 
 资源 `zhizhuip://docs/dynamic-proxy-session`：动态住宅代理连接串的参数写法与示例。
 

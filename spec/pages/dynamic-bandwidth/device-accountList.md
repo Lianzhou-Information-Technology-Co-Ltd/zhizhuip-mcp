@@ -1,0 +1,71 @@
+# 获取子账号列表
+
+## OpenAPI Specification
+
+```yaml
+openapi: 3.0.1
+info:
+  title: ''
+  description: ''
+  version: 1.0.0
+paths:
+  /externalapi/device/accountList:
+    get:
+      summary: 获取子账号列表
+      deprecated: false
+      description: 获取动态住宅不限流量子账号列表
+      tags:
+        - 用户IP子账号管理/动态住宅不限流量
+      parameters:
+        - name: access_token
+          in: query
+          description: 用户api key。<a href="/9518263m0" target="_blank">api key获取方式</a>
+          required: false
+          example: '{{access_token}}'
+          schema:
+            type: string
+        - name: product_type_id
+          in: query
+          description: 产品id，当前产品固定：11
+          required: true
+          example: 11
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 当前页
+          required: false
+          example: 1
+          schema:
+            type: integer
+        - name: pagesize
+          in: query
+          description: 每页默认条数，最大100
+          required: false
+          example: 10
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+                x-apifox-orders: []
+          headers: {}
+          x-apifox-name: 成功
+      security: []
+      x-apifox-folder: 用户IP子账号管理/动态住宅不限流量
+      x-apifox-status: released
+      x-run-in-apifox: https://app.apifox.com/web/project/3406922/apis/api-520399290-run
+components:
+  schemas: {}
+  securitySchemes: {}
+servers:
+  - url: https://www.zhizhuip.cc
+    description: 正式环境
+security: []
+
+```

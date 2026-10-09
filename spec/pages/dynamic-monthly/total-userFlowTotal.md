@@ -19,7 +19,7 @@ paths:
       parameters:
         - name: access_token
           in: query
-          description: 用户token。用户登录之后，获取token
+          description: 用户api key。<a href="/9518263m0" target="_blank">api key获取方式</a>
           required: true
           example: '{{access_token}}'
           schema:
@@ -56,7 +56,7 @@ paths:
                         description: 查询时间
                       flow:
                         type: string
-                        description: 消耗流量(单位Mb)
+                        description: 消耗流量(单位MB)
                     x-apifox-orders:
                       - time
                       - flow
