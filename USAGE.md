@@ -34,7 +34,7 @@ git --version
 3. 新建 Key，复制以 `sk-` 开头的完整内容。
 4. 将下文配置中的 `YOUR_API_KEY` 替换为这个 Key。
 
-获取入口说明见 [API Key 获取方式](https://develop.zhizhuip.com/9518263m0.md)。
+获取入口说明见 [API Key 获取方式](https://develop.zhizhuip.com/9518263m0)。
 
 API Key 代表你的账号权限。请保存在自己的客户端配置中，不要发到公开聊天、网页、截图或代码仓库。本文所有 `YOUR_API_KEY` 都是占位符，不能直接用来连接。
 
