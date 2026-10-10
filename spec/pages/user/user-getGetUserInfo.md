@@ -166,8 +166,7 @@ paths:
                   mobile: ''
                   email_verify: 1
                   mobile_verify: 0
-                  avatar: >-
-                    data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIxMDAiIHdpZHRoPSIxMDAiPjxyZWN0IGZpbGw9InJnYigxNjEsMTYwLDIyOSkiIHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48L3JlY3Q+PHRleHQgeD0iNTAiIHk9IjUwIiBmb250LXNpemU9IjUwIiB0ZXh0LWNvcHk9ImZhc3QiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIHRleHQtcmlnaHRzPSJhZG1pbiIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPjc8L3RleHQ+PC9zdmc+
+                  avatar: data:image/svg+xml;base64,xxxxxxxx
                   duties: null
                   gender: 0
                   purpose: null
@@ -176,11 +175,11 @@ paths:
                   extension_status: 2
                   verify_status: '1'
                   owner_verify_status: '0'
-                  ref: https://ceshi.zhizhuip.vip
+                  ref: https://xxxx.zhizhuip.vip
                   channel: '1'
                   origin_money: '3293.23'
                   give_money: '54.19'
-                  token: 3646c38e-82fd-4dc8-8815-b662229b83ac
+                  token: xxx-xxx-xxx-xxx-xxx
                   user_id: 1
                   createtime: 1697512606
                   expiretime: 1700104606
