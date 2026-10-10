@@ -270,10 +270,10 @@ paths:
                   total: 1
                   rows:
                     - password: '111222'
-                      username: demo-824
-                      id: 824
+                      username: demo-1
+                      id: 1
                       is_bind: 否
-                      bindUser: demo-824
+                      bindUser: demo-1
                       bindPassword: '111222'
                       createTime: '2023-10-13 09:38:14'
                       port: 5001
@@ -293,17 +293,17 @@ paths:
                     - id: 1
                       countryName: 全球随机
                       country: ALL
-                    - id: 1671
+                    - id: 2
                       conutry: AX
                       countryName: 奥兰
                       type_text: ''
                       status_text: ''
-                    - id: 1672
+                    - id: 3
                       conutry: AL
                       countryName: 阿尔巴尼亚
                       type_text: ''
                       status_text: ''
-                    - id: 4038
+                    - id: 4
                       conutry: XK
                       countryName: 科索沃
                       type_text: ''

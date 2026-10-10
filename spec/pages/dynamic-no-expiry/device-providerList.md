@@ -49,6 +49,14 @@ paths:
                   - msg
                   - time
                   - data
+              example:
+                code: 1
+                msg: 获取成功!
+                time: '1748312417'
+                data:
+                  - '275'
+                  - '4'
+                  - '253'
           headers: {}
           x-apifox-name: 成功
       security: []

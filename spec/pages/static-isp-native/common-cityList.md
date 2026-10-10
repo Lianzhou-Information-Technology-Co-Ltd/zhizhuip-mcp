@@ -66,25 +66,26 @@ paths:
                             code:
                               type: string
                               description: 城市名称，同name
+                            state_id:
+                              type: integer
+                            country_id:
+                              type: integer
+                            state_code:
+                              type: string
+                            country_code:
+                              type: string
                           required:
                             - id
                             - name
                             - code
-                          x-apifox-orders:
-                            - id
-                            - name
-                            - code
+                            - state_id
+                            - country_id
+                            - state_code
+                            - country_code
                         description: 城市列表
                     required:
                       - citys
-                    x-apifox-orders:
-                      - citys
                 required:
-                  - code
-                  - msg
-                  - time
-                  - data
-                x-apifox-orders:
                   - code
                   - msg
                   - time
@@ -92,29 +93,23 @@ paths:
               example:
                 code: 1
                 msg: 获取成功!
-                time: '1697681198'
+                time: '1791605538'
                 data:
                   citys:
-                    - id: 11
-                      name: Los Angeles
-                      code: Los Angeles
-                      type_text: ''
-                      status_text: ''
-                    - id: 22
-                      name: New York City
-                      code: New York City
-                      type_text: ''
-                      status_text: ''
-                    - id: 33
-                      name: Chicago
-                      code: Chicago
-                      type_text: ''
-                      status_text: ''
-                    - id: 44
-                      name: Houston
-                      code: Houston
-                      type_text: ''
-                      status_text: ''
+                    - id: 1
+                      name: Kuala Lumpur
+                      code: Kuala Lumpur
+                      state_id: 11
+                      country_id: 111
+                      state_code: Kuala Lumpur
+                      country_code: MY
+                    - id: 2
+                      name: Padang Mat Sirat
+                      code: Padang Mat Sirat
+                      state_id: 22
+                      country_id: 222
+                      state_code: Kedah
+                      country_code: MY
           headers: {}
           x-apifox-name: 成功
       security: []

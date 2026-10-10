@@ -112,9 +112,9 @@ paths:
                 msg: 带宽升级订单创建成功！
                 time: '1755159289'
                 data:
-                  orderId: 772
-                  orderNumber: 20250814161450689d9afa058a4
-                  price: '2030.00'
+                  orderId: 1
+                  orderNumber: 2025081416xxxxx
+                  price: '1.00'
           headers: {}
           x-apifox-name: 成功
       security: []

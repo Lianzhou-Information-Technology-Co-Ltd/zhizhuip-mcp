@@ -209,7 +209,7 @@ paths:
                 data:
                   - password: test
                     username: test
-                    id: 116
+                    id: 1
                     bindUser: test
                     disabled: 0
                     bindPassword: test

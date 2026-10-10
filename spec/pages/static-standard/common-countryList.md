@@ -120,127 +120,12 @@ paths:
                 time: '1767408564'
                 data:
                   countrys:
-                    - id: 4035
-                      name: 香港
-                      name_eng: Hong Kong
-                      code: HK
-                      weight: 3359
-                    - id: 4053
+                    - id: 2
                       name: 越南
                       name_eng: Vietnam
                       code: VN
                       weight: 1258
-                    - id: 4054
-                      name: 日本
-                      name_eng: Japan
-                      code: JP
-                      weight: 1193
-                    - id: 4034
-                      name: 中国台湾省
-                      name_eng: Taiwan
-                      code: TW
-                      weight: 758
-                    - id: 4058
-                      name: 印度尼西亚
-                      name_eng: Indonesia
-                      code: ID
-                      weight: 746
-                    - id: 4057
-                      name: 新加坡
-                      name_eng: Singapore
-                      code: SG
-                      weight: 740
-                    - id: 4060
-                      name: 印度
-                      name_eng: India
-                      code: IN
-                      weight: 739
-                    - id: 4052
-                      name: 泰国
-                      name_eng: Thailand
-                      code: TH
-                      weight: 722
-                    - id: 4056
-                      name: 菲律宾
-                      name_eng: Philippines
-                      code: PH
-                      weight: 721
-                    - id: 4038
-                      name: 英国
-                      name_eng: United Kingdom
-                      code: GB
-                      weight: 714
-                    - id: 4051
-                      name: 德国
-                      name_eng: Germany
-                      code: DE
-                      weight: 671
-                    - id: 4050
-                      name: 法国
-                      name_eng: France
-                      code: FR
-                      weight: 506
-                    - id: 4037
-                      name: 韩国
-                      name_eng: South Korea
-                      code: KR
-                      weight: 505
-                    - id: 4055
-                      name: 马来西亚
-                      name_eng: Malaysia
-                      code: MY
-                      weight: 477
-                    - id: 4046
-                      name: 肯尼亚
-                      name_eng: Kenya
-                      code: KE
-                      weight: 253
-                    - id: 4040
-                      name: 柬埔寨
-                      name_eng: Cambodia
-                      code: KH
-                      weight: 252
-                    - id: 4043
-                      name: 马里
-                      name_eng: Mali
-                      code: ML
-                      weight: 252
-                    - id: 4044
-                      name: 加纳
-                      name_eng: Ghana
-                      code: GH
-                      weight: 252
-                    - id: 4047
-                      name: 莫桑比克
-                      name_eng: Mozambique
-                      code: MZ
-                      weight: 252
-                    - id: 4088
-                      name: 巴西
-                      name_eng: null
-                      code: BR
-                      weight: 252
-                    - id: 4090
-                      name: 墨西哥
-                      name_eng: null
-                      code: MX
-                      weight: 252
-                    - id: 4063
-                      name: 西班牙
-                      name_eng: null
-                      code: ES
-                      weight: 249
-                    - id: 4059
-                      name: 澳大利亚
-                      name_eng: Australia
-                      code: AU
-                      weight: 248
-                    - id: 4062
-                      name: 沙特阿拉伯
-                      name_eng: Saudi Arabia
-                      code: SA
-                      weight: 149
-                    - id: 4041
+                    - id: 3
                       name: 老挝
                       name_eng: Lao People's Democratic Republic
                       code: LA

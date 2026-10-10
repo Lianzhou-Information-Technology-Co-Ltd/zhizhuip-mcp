@@ -52,8 +52,115 @@ paths:
             application/json:
               schema:
                 type: object
-                properties: {}
-                x-apifox-orders: []
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  time:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      rows:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            sub_account:
+                              type: integer
+                            username:
+                              type: string
+                            password:
+                              type: string
+                            protocol:
+                              type: string
+                            port:
+                              type: integer
+                            target:
+                              type: string
+                            disabled:
+                              type: boolean
+                            country:
+                              type: string
+                            bandwidth_num:
+                              type: integer
+                            start_time:
+                              type: integer
+                            end_time:
+                              type: integer
+                            status:
+                              type: integer
+                            status_text:
+                              type: string
+                            expire_tag:
+                              type: string
+                            refunding:
+                              type: boolean
+                            can_renew:
+                              type: boolean
+                            can_upgrade:
+                              type: boolean
+                            remark:
+                              type: string
+                          required:
+                            - id
+                            - sub_account
+                            - username
+                            - password
+                            - protocol
+                            - port
+                            - target
+                            - disabled
+                            - country
+                            - bandwidth_num
+                            - start_time
+                            - end_time
+                            - status
+                            - status_text
+                            - expire_tag
+                            - refunding
+                            - can_renew
+                            - can_upgrade
+                            - remark
+                    required:
+                      - total
+                      - rows
+                required:
+                  - code
+                  - msg
+                  - time
+                  - data
+              example:
+                code: 1
+                msg: 获取成功
+                time: '1791604890'
+                data:
+                  total: 1
+                  rows:
+                    - id: 1
+                      sub_account: 1
+                      username: xxxxx-1
+                      password: xxxxxx
+                      protocol: SOCKS5
+                      port: 5001
+                      target: 127.0.0.1
+                      disabled: false
+                      country: US
+                      bandwidth_num: 5
+                      start_time: 1789895041
+                      end_time: 1789898641
+                      status: 0
+                      status_text: 生效
+                      expire_tag: 即将过期
+                      refunding: false
+                      can_renew: false
+                      can_upgrade: false
+                      remark: '1111'
           headers: {}
           x-apifox-name: 成功
       security: []

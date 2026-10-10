@@ -60,25 +60,25 @@ paths:
                 msg: 带宽升级成功！
                 time: '1789718626'
                 data:
-                  orderId: 388427
+                  orderId: 1
                   orderNumber: 20260918xxxxxx
-                  origin_price: '4950.00'
-                  real_price: '4950.00'
+                  origin_price: '1.00'
+                  real_price: '1.00'
                   priceDetail:
                     beforeBandwidth: 10
                     beforeUnitPrice: '45.00'
                     unitPrice: '45.00'
                     displayUnitPrice: '45.00'
                     leftDays: 330
-                    total: '4950.00'
-                    originTotal: '4950.00'
+                    total: '1.00'
+                    originTotal: '1.00'
                     discount: '0.00'
                     isCustomPrice: 0
                     disabledConpon: false
                     country: US
                     bandwidth: 20
                   subAccount:
-                    id: 49
+                    id: 1
                     sub_account: 1
                     username: xxxxxx
                     password: xxxxxx

@@ -120,21 +120,21 @@ paths:
                 msg: 批量查询成功!
                 time: '1752216108'
                 data:
-                  - account: 560
+                  - account: 1
                     limit_flow: '2'
-                    use_flow: 32156412
+                    use_flow: 1
                     cycle: '0'
                     disabled: '0'
                     createtime: '2025-07-11 13:24:16'
                     updatetime: '2025-07-11 14:14:32'
-                  - account: 555
+                  - account: 2
                     limit_flow: '3'
                     use_flow: 0
                     cycle: '1'
                     disabled: '0'
                     createtime: '2025-07-11 13:33:03'
                     updatetime: '2025-07-11 13:55:05'
-                  - account: 554
+                  - account: 3
                     limit_flow: '1'
                     use_flow: 0
                     cycle: '1'

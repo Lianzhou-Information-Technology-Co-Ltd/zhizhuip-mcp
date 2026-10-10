@@ -85,45 +85,52 @@ paths:
                   data:
                     type: object
                     properties:
-                      countrys:
+                      citys:
                         type: array
                         items:
                           type: object
                           properties:
                             id:
                               type: integer
-                              title: 国家id。即：country_id
                             name:
                               type: string
-                              title: 国家名称
-                            image:
-                              type: string
+                              description: 城市名称
                             code:
                               type: string
-                              title: 国家编码
-                            type_text:
+                              description: 城市编码
+                            state_id:
+                              type: integer
+                              description: 城市对应州、省id
+                            country_id:
+                              type: integer
+                              description: 城市对应国家id
+                            state_code:
                               type: string
-                            status_text:
+                              description: 城市对应州、省编码
+                            country_code:
                               type: string
+                              description: 城市对应国家编码
                           required:
                             - id
                             - name
-                            - image
                             - code
-                            - type_text
-                            - status_text
+                            - state_id
+                            - country_id
+                            - state_code
+                            - country_code
                           x-apifox-orders:
                             - id
                             - name
-                            - image
                             - code
-                            - type_text
-                            - status_text
-                        title: 国家列表
+                            - state_id
+                            - country_id
+                            - state_code
+                            - country_code
+                        description: 城市数组
                     required:
-                      - countrys
+                      - citys
                     x-apifox-orders:
-                      - countrys
+                      - citys
                 required:
                   - code
                   - msg
@@ -137,21 +144,23 @@ paths:
               example:
                 code: 1
                 msg: 获取成功!
-                time: '1697680105'
+                time: '1791604441'
                 data:
-                  countrys:
-                    - id: 11
-                      name: 美国
-                      image: ''
-                      code: US
-                      type_text: ''
-                      status_text: ''
-                    - id: 12
-                      name: 中国台湾省
-                      image: ''
-                      code: TW
-                      type_text: ''
-                      status_text: ''
+                  citys:
+                    - id: 1
+                      name: Los Angeles
+                      code: Los Angeles
+                      state_id: 11
+                      country_id: 111
+                      state_code: California
+                      country_code: US
+                    - id: 2
+                      name: East Tulare Villa
+                      code: East Tulare Villa
+                      state_id: 22
+                      country_id: 222
+                      state_code: California
+                      country_code: US
           headers: {}
           x-apifox-name: 成功
       security: []

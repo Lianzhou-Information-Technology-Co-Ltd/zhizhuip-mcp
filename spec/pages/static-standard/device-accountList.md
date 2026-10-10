@@ -288,9 +288,9 @@ paths:
                 msg: 获取成功
                 time: '1697514426'
                 data:
-                  total: 106
+                  total: 1
                   rows:
-                    - id: '110'
+                    - id: 1
                       is_diff: 0
                       agree: SOCKS5
                       country: US
