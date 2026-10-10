@@ -108,7 +108,7 @@ paths:
                   last_page: 1
                   total: 1
                   data:
-                    - ipStr: 130.12.132
+                    - ipStr: 127.0.0
                       remark: 紧张
                       skuStatus: 1
           headers: {}

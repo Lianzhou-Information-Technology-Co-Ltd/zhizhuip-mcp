@@ -74,7 +74,7 @@ paths:
                 msg: 购买成功
                 time: '1789718580'
                 data:
-                  orderId: 388425
+                  orderId: 1
                   orderNumber: 20260918160xxxxxxxx
                   origin_price: '450.00'
                   real_price: '450.00'
